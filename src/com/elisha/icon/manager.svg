@@ -1,0 +1,16 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <rect width="64" height="64" rx="12" fill="#FF705C"/>
+  <g fill="#FFFFFF">
+    <!-- Main (manager) user -->
+    <circle cx="32" cy="18" r="6"/>
+    <path d="M24 32c0-4 4-8 8-8s8 4 8 8v2H24v-2z"/>
+    
+    <!-- Left subordinate -->
+    <circle cx="20" cy="36" r="4"/>
+    <path d="M14 46c0-3 3-6 6-6s6 3 6 6v1H14v-1z"/>
+    
+    <!-- Right subordinate -->
+    <circle cx="44" cy="36" r="4"/>
+    <path d="M38 46c0-3 3-6 6-6s6 3 6 6v1H38v-1z"/>
+  </g>
+</svg>

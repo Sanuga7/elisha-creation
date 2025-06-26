@@ -1,0 +1,44 @@
+Jun 25, 2025 4:07:09 PM com.elisha.loggers.Loggers logServe
+SEVERE: class java.lang.Class-com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+Jun 25, 2025 4:07:24 PM com.elisha.loggers.Loggers logServe
+SEVERE: class java.lang.Class-com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+Jun 25, 2025 4:07:26 PM com.elisha.loggers.Loggers logServe
+SEVERE: class java.lang.Class-com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+Jun 25, 2025 4:07:27 PM com.elisha.loggers.Loggers logServe
+SEVERE: class java.lang.Class-com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+Jun 25, 2025 4:07:28 PM com.elisha.loggers.Loggers logServe
+SEVERE: class java.lang.Class-com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+Jun 25, 2025 4:07:29 PM com.elisha.loggers.Loggers logServe
+SEVERE: class java.lang.Class-com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+Jun 25, 2025 4:07:30 PM com.elisha.loggers.Loggers logServe
+SEVERE: class java.lang.Class-com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+Jun 25, 2025 4:07:31 PM com.elisha.loggers.Loggers logServe
+SEVERE: class java.lang.Class-com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+Jun 25, 2025 4:11:42 PM com.elisha.loggers.Loggers logServe
+SEVERE: class java.lang.Class-com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+Jun 25, 2025 6:38:27 PM com.elisha.loggers.Loggers logInfo
+INFO: com.elisha.userDAO.User-Something Went Wrong Failed to createSatementTable 'elisha.users' doesn't exist
+Jun 25, 2025 6:39:05 PM com.elisha.loggers.Loggers logInfo
+INFO: com.elisha.userDAO.User-Something Went Wrong Failed to createSatementNo operations allowed after connection closed.
+Jun 25, 2025 6:40:20 PM com.elisha.loggers.Loggers logInfo
+INFO: com.elisha.userDAO.User-Something Went Wrong Failed to createSatementNo operations allowed after connection closed.
+Jun 25, 2025 6:46:08 PM com.elisha.loggers.Loggers logInfo
+INFO: com.elisha.userDAO.User-Something Went Wrong Failed to createSatementNo operations allowed after connection closed.
