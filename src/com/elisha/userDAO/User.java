@@ -26,10 +26,11 @@ public class User {
               return false;
            }else {
                
-               String query = "SELECT * FROM `users` WHERE `email` = ? AND `password` = ?";
+               String query = "SELECT * FROM `users` WHERE `email` = ? AND `password` = ? AND `status_id` = ?";
                try(PreparedStatement stmt = connection.prepareStatement(query)){
                    stmt.setString(1, email);
                    stmt.setString(2, pwd);
+                   stmt.setInt(3, 1);
                    
                    try(ResultSet rs = stmt.executeQuery()){
                       if(rs.next()){

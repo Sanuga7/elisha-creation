@@ -4,11 +4,20 @@
  */
 package com.elisha.panel;
 
+import com.elisha.database.Database;
+import com.elisha.loggers.Loggers;
+import com.elisha.userDAO.User;
 import com.formdev.flatlaf.FlatClientProperties;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.category.DefaultCategoryDataset;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.Vector;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -19,9 +28,13 @@ public class Dashboard extends javax.swing.JPanel {
     /**
      * Creates new form Dashboard
      */
+    
+    private static final String cls = User.class.getName();
+    
     public Dashboard() {
         initComponents();
         init();
+        loadTabel();
     }
     
     private void init(){
@@ -59,6 +72,54 @@ public class Dashboard extends javax.swing.JPanel {
         jPanel5.revalidate();
         jPanel5.repaint();
 
+    }
+    
+    private void loadTabel(){
+    
+        String query =  "SELECT * \n" +
+                        "FROM `product`\n" +
+                        "INNER JOIN `brand` ON product.brand_id = brand.id\n" +
+                        "INNER JOIN `category` ON product.category_id = category.id";
+        
+        try(Connection connection = Database.createConnection()){
+           if(connection == null){
+              Loggers.logInfo("Something Went Wrong Failed to createConnnection", cls);
+           }else{
+           
+               try(PreparedStatement stmt = connection.prepareStatement(query)){
+                   ResultSet rs = stmt.executeQuery();
+                       
+                       Vector<Vector> vd = new Vector<>();
+                   
+                       while(rs.next()){
+                       
+                           int x = 1;
+                           Vector<String> row = new Vector<>();
+                           row.add(String.valueOf(x));
+                           row.add(rs.getString("title"));
+                           row.add(rs.getString("brand"));
+                           row.add(rs.getString("name"));
+                           
+                           vd.add(row);
+                           x++;
+                       }
+                       
+                       Vector<String> vcn = new Vector<>();
+                       vcn.add("Product_id");
+                       vcn.add("Product_Title");
+                       vcn.add("Product_Brand");
+                       vcn.add("Product_Category");
+                       
+                       DefaultTableModel dtm = new DefaultTableModel(vd, vcn);
+                       
+                       jTable1.setModel(dtm);
+                   }
+               }
+        }catch(SQLException e){
+           Loggers.logInfo("Something Went Wrong Failed to createSatement"+ e.getMessage(), cls);
+        }
+
+    
     }
 
     /**
@@ -147,7 +208,7 @@ public class Dashboard extends javax.swing.JPanel {
                 .addGap(28, 28, 28)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel4)
+                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -166,13 +227,13 @@ public class Dashboard extends javax.swing.JPanel {
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(18, 18, 18)
+                .addContainerGap()
                 .addComponent(jLabel5)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(58, Short.MAX_VALUE)
+                .addContainerGap(67, Short.MAX_VALUE)
                 .addComponent(jLabel6)
-                .addGap(15, 15, 15))
+                .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -188,16 +249,35 @@ public class Dashboard extends javax.swing.JPanel {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "ProductId", "Product Name", "Title 3", "Title 4"
+                "Id", "Title", "Brand", "Category"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTable1.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(jTable1);
+        if (jTable1.getColumnModel().getColumnCount() > 0) {
+            jTable1.getColumnModel().getColumn(0).setResizable(false);
+            jTable1.getColumnModel().getColumn(1).setResizable(false);
+            jTable1.getColumnModel().getColumn(2).setResizable(false);
+            jTable1.getColumnModel().getColumn(3).setResizable(false);
+        }
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -230,7 +310,7 @@ public class Dashboard extends javax.swing.JPanel {
                         .addGap(33, 33, 33)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 459, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 352, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(86, Short.MAX_VALUE))
+                .addContainerGap(166, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -243,7 +323,6 @@ public class Dashboard extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
