@@ -16,6 +16,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
 
@@ -44,22 +47,184 @@ public class Dashboard extends javax.swing.JPanel {
         jPanel1.putClientProperty(FlatClientProperties.STYLE, "arc:20");
         
         charteCreate();
+        dailyEarn();
+        totalEarn();
+    
+    }
+    
+    private void dailyEarn(){
+    
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDateTime now = LocalDateTime.now();
+        String time = dtf.format(now);
+        
+        String query = "SELECT * FROM `invoice` WHERE `time` LIKE ?";
+        
+        try(Connection connection = Database.createConnection()){
+        
+            if(connection != null){
+            
+                try(PreparedStatement stmt = connection.prepareStatement(query)){
+                
+                    stmt.setString(1, time+"%");
+                    
+                    ResultSet rs = stmt.executeQuery();
+                    
+                    int price = 0;
+                    
+                    while(rs.next()){
+                    
+                        price += Integer.valueOf(rs.getString("price"));
+                        
+                    }
+                    
+                    jLabel2.setText("Rs."+price+".00");
+                
+                }
+            
+            }
+        
+        }catch(SQLException e){
+           Loggers.logInfo("Something Went Wrong Failed to createSatement"+ e.getMessage(), cls);
+        }
+    
+    }
+    
+    private void totalEarn(){
+        
+        String query = "SELECT * FROM `invoice`";
+        
+        try(Connection connection = Database.createConnection()){
+        
+            if(connection != null){
+            
+                try(PreparedStatement stmt = connection.prepareStatement(query)){
+                    
+                    ResultSet rs = stmt.executeQuery();
+                    
+                    int price = 0;
+                    int x = 0;
+                    while(rs.next()){
+                    
+                       price += Integer.valueOf(rs.getString("price"));
+                       x++;
+                    }
+                    
+                    jLabel4.setText("Rs."+price+".00");
+                    jLabel6.setText(x+" Sales");
+                
+                }
+            
+            }
+        
+        }catch(SQLException e){
+           Loggers.logInfo("Something Went Wrong Failed to createSatement"+ e.getMessage(), cls);
+        }
     
     }
     
     private void charteCreate(){
-      
+        
+        YearMonth currentMonth = YearMonth.now();
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        dataset.addValue(10000, "Earnings", "Monday");
-        dataset.addValue(12000, "Earnings", "Tuesday");
-        dataset.addValue(8000, "Earnings", "Wednesday");
-        dataset.addValue(15000, "Earnings", "Thursday");
-        dataset.addValue(11000, "Earnings", "Friday");
+        
+        for (int i = 0; i < 5; i++) {
+            
+            String query = "SELECT * FROM `invoice` WHERE `time` LIKE ? ";
+            
+            try(Connection connection = Database.createConnection()){
+            
+                if(connection != null){
 
+                   try(PreparedStatement stmt = connection.prepareStatement(query)){
+                       
+                       stmt.setString(1, currentMonth.toString() + "-%");
+                       
+                       ResultSet rs = stmt.executeQuery();
+                       
+                       int price = 0;
+                     
+                       while (rs.next()) {                           
+                           price += Integer.valueOf(rs.getString("price"));
+                       }
+                       
+                       YearMonth targetMonth = currentMonth;
+                       int month = targetMonth.getMonthValue();
+                       String monthName = "";
+                       
+                       switch(month){
+                       
+                           case 1:
+                              monthName = "january";
+                              break;
+                           
+                           case 2:
+                              monthName = "February";
+                              break;
+                              
+                           case 3:
+                              monthName = "March";
+                              break;
+                              
+                           case 4:
+                              monthName = "April";
+                              break;
+                              
+                           case 5:
+                              monthName = "May";
+                              break;
+                              
+                           case 6:
+                              monthName = "June";
+                              break;
+                              
+                           case 7:
+                              monthName = "July";
+                              break;
+                              
+                           case 8:
+                              monthName = "August";
+                              break;
+                              
+                           case 9:
+                              monthName = "September";
+                              break;
+                              
+                           case 10:
+                              monthName = "October";
+                              break;   
+                              
+                           case 11:
+                              monthName = "November";
+                              break;
+                              
+                           case 12:
+                              monthName = "December";
+                              break; 
+                              
+                           default:
+                               monthName = "Unkown";
+                               break;
+                       
+                       }
+                       
+                       dataset.addValue(price, "Earnings", monthName);
+                   
+                   }
+
+                }
+            
+            }catch(SQLException e){
+               Loggers.logInfo("Something Went Wrong Failed to createSatement"+ e.getMessage(), cls);
+            }
+            
+            currentMonth = currentMonth.minusMonths(1);
+            
+        }
         // --- Create the chart ---
         JFreeChart chart = ChartFactory.createBarChart(
-                "Weekly Earnings",     
-                "Day",                 
+                "Monthly Earnings",     
+                "Month",                 
                 "Earnings (Rs)",     
                 dataset                
         );
@@ -90,10 +255,10 @@ public class Dashboard extends javax.swing.JPanel {
                    ResultSet rs = stmt.executeQuery();
                        
                        Vector<Vector> vd = new Vector<>();
-                   
+                       int x = 1;
+                                                  
                        while(rs.next()){
-                       
-                           int x = 1;
+                      
                            Vector<String> row = new Vector<>();
                            row.add(String.valueOf(x));
                            row.add(rs.getString("title"));
@@ -183,7 +348,7 @@ public class Dashboard extends javax.swing.JPanel {
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText("Net profit");
+        jLabel3.setText("Total Earnings");
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
