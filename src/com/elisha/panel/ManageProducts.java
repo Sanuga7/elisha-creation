@@ -4,18 +4,103 @@
  */
 package com.elisha.panel;
 
+import com.elisha.database.Database;
+import com.elisha.dialog.ProductDiaog;
+import com.elisha.loggers.Loggers;
+import com.elisha.userDAO.User;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Arrays;
+import java.util.Vector;
+import javax.swing.table.DefaultTableModel;
+import com.elisha.gui.Home;
+
+
 /**
  *
  * @author Sanuga
  */
 public class ManageProducts extends javax.swing.JPanel {
-
+    
+        
+    private final Home homeScreen;
+    private static final String cls = User.class.getName();
     /**
      * Creates new form ManageProducts
      */
-    public ManageProducts() {
+    public ManageProducts(Home parent) {
         initComponents();
+        this.homeScreen = parent;
+        init();
     }
+    
+    private void init(){
+    
+        jButton1.setIcon(new FlatSVGIcon("com/elisha/icon/new.svg", 20, 20));
+        loadProductTable();
+    
+    }
+    
+    private void loadProductTable() {
+        
+            Vector<Vector<Object>> dataVector = new Vector<>();
+            Vector<String> columnNames = new Vector<>(Arrays.asList(
+                "Product ID", "Title", "Brand", "Category", "Available Colors"
+            ));
+
+            String query = "SELECT " +
+                           "p.id AS product_id, " +
+                           "p.title, " +
+                           "b.brand, " +
+                           "c.name AS category, " +
+                           "GROUP_CONCAT(DISTINCT col.name SEPARATOR ', ') AS colors " +
+                           "FROM product p " +
+                           "JOIN brand b ON p.brand_id = b.id " +
+                           "JOIN category c ON p.category_id = c.id " +
+                           "JOIN stock_has_product shp ON p.id = shp.product_id " +
+                           "JOIN stock_has_variation shv ON shp.stock_id = shv.stock_id " +
+                           "JOIN variation v ON shv.variation_id = v.id " +
+                           "JOIN color col ON v.color_id = col.id " +
+                           "GROUP BY p.id, p.title, b.brand, c.name";
+
+            try (Connection connection = Database.createConnection()) {
+                
+                try(Statement stmt = connection.createStatement()){
+                
+                        ResultSet rs = stmt.executeQuery(query);
+
+                        while (rs.next()) {
+                            Vector<Object> row = new Vector<>();
+                            row.add(rs.getInt("product_id"));
+                            row.add(rs.getString("title"));
+                            row.add(rs.getString("brand"));
+                            row.add(rs.getString("category"));
+                            row.add(rs.getString("colors"));
+                            dataVector.add(row);
+                        }
+
+                        DefaultTableModel model = new DefaultTableModel(dataVector, columnNames) {
+                            @Override
+                            public boolean isCellEditable(int row, int column) {
+                                return false;
+                            }
+                        };
+
+                        jTable1.setModel(model);
+
+                        }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                Loggers.logInfo("Failed to load product data: " + e.getMessage(), cls);
+            }
+        }
+
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -26,32 +111,92 @@ public class ManageProducts extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jButton1 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel1.setText("Products");
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4", "null"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTable1.setFocusable(false);
+        jScrollPane1.setViewportView(jTable1);
+        if (jTable1.getColumnModel().getColumnCount() > 0) {
+            jTable1.getColumnModel().getColumn(0).setResizable(false);
+            jTable1.getColumnModel().getColumn(1).setResizable(false);
+            jTable1.getColumnModel().getColumn(2).setResizable(false);
+            jTable1.getColumnModel().getColumn(3).setResizable(false);
+            jTable1.getColumnModel().getColumn(4).setResizable(false);
+        }
+
+        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jButton1.setText("Add");
+        jButton1.setBorderPainted(false);
+        jButton1.setFocusPainted(false);
+        jButton1.setFocusable(false);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(226, 226, 226)
-                .addComponent(jLabel1)
-                .addContainerGap(337, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(16, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 1071, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(17, 17, 17))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(181, 181, 181)
-                .addComponent(jLabel1)
-                .addContainerGap(205, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 404, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(28, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        ProductDiaog productDialog =  new ProductDiaog(homeScreen, true);
+        productDialog.setLocationRelativeTo(null);
+        productDialog.setVisible(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 }

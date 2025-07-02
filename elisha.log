@@ -42,3 +42,11 @@ Jun 25, 2025 6:40:20 PM com.elisha.loggers.Loggers logInfo
 INFO: com.elisha.userDAO.User-Something Went Wrong Failed to createSatementNo operations allowed after connection closed.
 Jun 25, 2025 6:46:08 PM com.elisha.loggers.Loggers logInfo
 INFO: com.elisha.userDAO.User-Something Went Wrong Failed to createSatementNo operations allowed after connection closed.
+Jul 02, 2025 1:56:46 PM com.elisha.loggers.Loggers logInfo
+INFO: com.elisha.userDAO.User-Something Went Wrong Failed to createSatementYou have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '-07-02%' at line 1
+Jul 02, 2025 2:42:57 PM com.elisha.loggers.Loggers logInfo
+INFO: com.elisha.userDAO.User-Something Went Wrong Failed to createSatementColumn 'id' not found.
+Jul 02, 2025 2:48:40 PM com.elisha.loggers.Loggers logInfo
+INFO: com.elisha.userDAO.User-Something Went Wrong Failed to createSatementColumn 'id' not found.
+Jul 02, 2025 2:51:01 PM com.elisha.loggers.Loggers logInfo
+INFO: com.elisha.userDAO.User-Something Went Wrong Failed to createSatementColumn 'id' not found.
