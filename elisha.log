@@ -50,3 +50,5 @@ Jul 02, 2025 2:48:40 PM com.elisha.loggers.Loggers logInfo
 INFO: com.elisha.userDAO.User-Something Went Wrong Failed to createSatementColumn 'id' not found.
 Jul 02, 2025 2:51:01 PM com.elisha.loggers.Loggers logInfo
 INFO: com.elisha.userDAO.User-Something Went Wrong Failed to createSatementColumn 'id' not found.
+Jul 16, 2025 5:53:06 PM com.elisha.loggers.Loggers logInfo
+INFO: com.elisha.userDAO.Product-Something Went Wrong Failed to createSatementData truncation: Data too long for column 'path' at row 1

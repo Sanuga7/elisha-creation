@@ -5,6 +5,7 @@
  */
 package com.elisha.dialog;
 
+import com.elisha.database.Database;
 import java.awt.CardLayout;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -13,7 +14,12 @@ import java.util.HashMap;
 import javax.swing.SwingUtilities;
 import com.elisha.dialog.panel.BasicProductInfoPanel;
 import com.elisha.dialog.panel.ProductImagePanel;
+import com.elisha.loggers.Loggers;
+import com.elisha.optionpane.Message;
+import com.elisha.userDAO.Product;
+import com.elisha.userDAO.User;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
 
@@ -26,6 +32,7 @@ public class ProductDiaog extends javax.swing.JDialog {
     private BasicProductInfoPanel productInfoPanel;
     private ProductImagePanel productImgPanel;
     private CardLayout contentPanelLayout;
+    private static final String cls = ProductDiaog.class.getName();
     
     public ProductDiaog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -82,7 +89,7 @@ public class ProductDiaog extends javax.swing.JDialog {
         jLabel1.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
         jLabel1.setText("Product Information");
 
-        controlBtn.setBackground(new java.awt.Color(0, 0, 255));
+        controlBtn.setBackground(new java.awt.Color(255, 112, 92));
         controlBtn.setFont(new java.awt.Font("Segoe UI Light", 0, 14)); // NOI18N
         controlBtn.setForeground(new java.awt.Color(255, 255, 255));
         controlBtn.setText("Next");
@@ -184,53 +191,40 @@ public class ProductDiaog extends javax.swing.JDialog {
         String description  = productInfoPanel.getPrDescriptionInput().getText();
         int categorySelectIndex = productInfoPanel.getPrCatCombo().getSelectedIndex();
         int brandSelectIndex = productInfoPanel.getPrBrandCombo().getSelectedIndex();
-        String gender = String.valueOf(productInfoPanel.getPrGenderCombo().getSelectedItem());
+        String addedBy = String.valueOf(productInfoPanel.getPrGenderCombo().getSelectedItem());
         String status = String.valueOf(productInfoPanel.getPrStatusCombo().getSelectedItem());
         
         String imagePath = productImgPanel.getPrImagePathInput().getText();
         
         HashMap<String, Integer> categoriesMap = productInfoPanel.getCategoryMap();
         HashMap<String, Integer> brandsMap = productInfoPanel.getBrandMap();
-        HashMap<String, Integer> genderMap = productInfoPanel.getGenderMap();
-        HashMap<String, Integer> statusMap = productInfoPanel.getStatusMap();
         
         String category = productInfoPanel.getPrCatCombo().getItemAt(categorySelectIndex);
         String brand = productInfoPanel.getPrBrandCombo().getItemAt(brandSelectIndex);
         
         int categoryId = categoriesMap.get(category);
         int brandId = brandsMap.get(brand);
-        int genderId = genderMap.get(gender);
-        int statusId = statusMap.get(status);
         
-        try{
-          Class.forName("com.mysql.cj.jdbc.Driver");
-          Connection c  = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/smarttrade", "root", "2006@Sanuga");
-          Statement smt = c.createStatement();
-          ResultSet rs  = smt.executeQuery("SELECT `product_id` FROM `product` WHERE `product`.`name` = '"+productName+"' "
-                  + "AND `product`.`category_id` = '"+categoryId+"' "
-                          + "AND `product`.`brand_id` = '"+brandId+"' "
-                                  + "AND `product`.`gender_id` = '"+genderId+"'");
-          if(rs.next()){
-              JOptionPane.showMessageDialog(null, 
-                      "This product Already exists", "Info", JOptionPane.ERROR_MESSAGE);
-          }else {
-              smt.executeUpdate("INSERT INTO `product` (`name`,`description`,`product_sku`,`category_id`,`brand_id`,`gender_id`,`status_id`)"
-                      + "VALUES ('"+productName+"', '"+description+"', '"+prSKU+"', '"+categoryId+"', '"+brandId+"', '"+genderId+"', '"+statusId+"')");
-              
-              ResultSet rs1 = smt.executeQuery("SELECT LAST_INSERT_ID()");
-              
-              if(rs1.next()){
-                int lastInserID = rs1.getInt(1);
-                smt.executeUpdate("INSERT INTO `product_img` (`path`,`product_id`) VALUES('"+imagePath+"','"+lastInserID+"')");
-              }
-              
-              JOptionPane.showMessageDialog(null, 
-                      "New product Added Successfully", "Done", JOptionPane.INFORMATION_MESSAGE);
-              
-              this.dispose();
-          }
-        }catch(SQLException | ClassNotFoundException e){
-          e.printStackTrace();
+        if (!productName.isEmpty() && !prSKU.isEmpty() && !description.isEmpty() && !imagePath.isEmpty()) {
+            
+            HashMap<String, String> pr_Data = new HashMap<>();
+            pr_Data.put("title", productName);
+            pr_Data.put("description", description);
+            pr_Data.put("brand", String.valueOf(brandId));
+            pr_Data.put("category", String.valueOf(categoryId));
+            pr_Data.put("sku", prSKU);
+            pr_Data.put("added", addedBy);
+            pr_Data.put("path", imagePath);
+            
+            if(Product.InsertProduct(pr_Data)){
+            
+                Message.showSucess(this, "Product Added Successfully");
+                this.dispose();
+            
+            }
+
+        } else {
+            JOptionPane.showMessageDialog(null, "Please fill in all required fields!", "Validation Error", JOptionPane.WARNING_MESSAGE);
         }
         
     }

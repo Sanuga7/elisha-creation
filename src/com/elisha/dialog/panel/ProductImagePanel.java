@@ -26,6 +26,9 @@ public class ProductImagePanel extends javax.swing.JPanel {
     /**
      * Creates new form ProductImagePanel
      */
+    
+    private int x = 0; 
+    
     public ProductImagePanel() {
         initComponents();
     }
@@ -39,9 +42,11 @@ public class ProductImagePanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        imageLoadingPanel = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         prImagePathInput = new javax.swing.JTextField();
-        imageLoadingPanel = new javax.swing.JPanel();
+
+        imageLoadingPanel.setBackground(new java.awt.Color(255, 255, 255));
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -54,13 +59,12 @@ public class ProductImagePanel extends javax.swing.JPanel {
         });
 
         prImagePathInput.setFont(new java.awt.Font("Segoe UI Light", 0, 14)); // NOI18N
+        prImagePathInput.setEnabled(false);
         prImagePathInput.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 prImagePathInputActionPerformed(evt);
             }
         });
-
-        imageLoadingPanel.setBackground(new java.awt.Color(255, 255, 255));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -70,7 +74,6 @@ public class ProductImagePanel extends javax.swing.JPanel {
                 .addComponent(prImagePathInput, javax.swing.GroupLayout.DEFAULT_SIZE, 386, Short.MAX_VALUE)
                 .addGap(0, 0, 0)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addComponent(imageLoadingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -78,8 +81,7 @@ public class ProductImagePanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(prImagePathInput, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(imageLoadingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE))
+                .addContainerGap(298, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -89,29 +91,35 @@ public class ProductImagePanel extends javax.swing.JPanel {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         
-        JFileChooser jf = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Images (.png, .jpg, .jpeg)", "png","jpg","jpeg");
-        jf.setFileFilter(filter);
-        int option = jf.showOpenDialog(imageLoadingPanel);
-        if(option == JFileChooser.APPROVE_OPTION){
-            File selectedFile  = jf.getSelectedFile();
-            try{
-              
-                File imageFolder = new File("Product Images");
-                
-                if(!imageFolder.exists()){
-                   imageFolder.mkdir();
+        if(x==0){
+        
+            JFileChooser jf = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Images (.png, .jpg, .jpeg)", "png","jpg","jpeg");
+            jf.setFileFilter(filter);
+            int option = jf.showOpenDialog(imageLoadingPanel);
+            if(option == JFileChooser.APPROVE_OPTION){
+                File selectedFile  = jf.getSelectedFile();
+                try{
+
+                    File imageFolder = new File("Product Images");
+
+                    if(!imageFolder.exists()){
+                       imageFolder.mkdir();
+                    }
+
+                    String fileName = System.currentTimeMillis() + "_" + selectedFile.getName();
+                    File destinationFile = new File(imageFolder, fileName);
+                    prImagePathInput.setText("Product Images/" + fileName);
+                    Files.copy(selectedFile.toPath(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    showImage(destinationFile);
+                    x++;
+                }catch(IOException e){
+                    JOptionPane.showMessageDialog(jButton1, "Something went Wrong", "Warning Message", JOptionPane.WARNING_MESSAGE);
                 }
-                
-                String fileName = System.currentTimeMillis() + "_" + selectedFile.getName();
-                File destinationFile = new File(imageFolder, fileName);
-                prImagePathInput.setText(destinationFile.getAbsolutePath());
-                Files.copy(selectedFile.toPath(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                showImage(destinationFile);
-                
-            }catch(IOException e){
-                JOptionPane.showMessageDialog(jButton1, "Something went Wrong", "Warning Message", JOptionPane.WARNING_MESSAGE);
             }
+        
+        }else{
+           jButton1.setEnabled(false);
         }
         
     }//GEN-LAST:event_jButton1ActionPerformed

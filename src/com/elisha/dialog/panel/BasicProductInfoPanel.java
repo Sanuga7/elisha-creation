@@ -4,6 +4,7 @@
  */
 package com.elisha.dialog.panel;
 
+import com.elisha.session.UserSession;
 import java.util.Random;
 import java.sql.*;
 import java.lang.ClassNotFoundException;
@@ -39,6 +40,7 @@ public class BasicProductInfoPanel extends javax.swing.JPanel {
         loadBrand();
         loadCategory();
         generateSKUNumebr();
+        loadAddedby();
     }
     
     private ResultSet searchData(String query){
@@ -47,7 +49,7 @@ public class BasicProductInfoPanel extends javax.swing.JPanel {
         
             try{
               Class.forName("com.mysql.cj.jdbc.Driver");
-               Connection c = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/smarttrade", "root", "2006@Sanuga");
+               Connection c = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/elisha_db", "root", "2006@Sanuga");
                Statement smt = c.createStatement();
                rs = smt.executeQuery(query);
             }catch(ClassNotFoundException e){
@@ -67,7 +69,7 @@ public class BasicProductInfoPanel extends javax.swing.JPanel {
             categoryMap.put("Select Category",0);
             while(rs.next()){
               String categoriesName = rs.getString("name");
-              categoryMap.put(categoriesName, rs.getInt("category_id"));
+              categoryMap.put(categoriesName, rs.getInt("id"));
               categories.add(categoriesName);
             }
             DefaultComboBoxModel dcm = new DefaultComboBoxModel(categories);
@@ -77,6 +79,16 @@ public class BasicProductInfoPanel extends javax.swing.JPanel {
         }
     }
     
+    private void loadAddedby(){
+
+        Vector<String> added = new Vector();
+        added.add(UserSession.name);
+        
+        DefaultComboBoxModel dcm = new DefaultComboBoxModel<>(added);
+        prGenderCombo.setModel(dcm);
+    
+    }
+    
     private void loadBrand(){
         try{
             ResultSet rs = searchData("SELECT * FROM `brand`");
@@ -84,8 +96,8 @@ public class BasicProductInfoPanel extends javax.swing.JPanel {
             brands.add("Select Brands");
             brandMap.put("Select Brand",0);
             while(rs.next()){
-              String brandName = rs.getString("name");
-              brandMap.put(brandName, rs.getInt("brand_id"));
+              String brandName = rs.getString("brand");
+              brandMap.put(brandName, rs.getInt("id"));
               brands.add(brandName);
             }
             DefaultComboBoxModel dcm = new DefaultComboBoxModel(brands);
@@ -217,7 +229,7 @@ public class BasicProductInfoPanel extends javax.swing.JPanel {
         jPanel4.setLayout(new java.awt.GridLayout(2, 2, 10, 5));
 
         jLabel6.setFont(new java.awt.Font("Segoe UI Light", 0, 14)); // NOI18N
-        jLabel6.setText("Gender");
+        jLabel6.setText("Added By");
         jPanel4.add(jLabel6);
 
         jLabel7.setFont(new java.awt.Font("Segoe UI Light", 0, 14)); // NOI18N
@@ -225,9 +237,12 @@ public class BasicProductInfoPanel extends javax.swing.JPanel {
         jPanel4.add(jLabel7);
 
         prGenderCombo.setFont(new java.awt.Font("Segoe UI Light", 0, 14)); // NOI18N
+        prGenderCombo.setEnabled(false);
         jPanel4.add(prGenderCombo);
 
         prStatusCombo.setFont(new java.awt.Font("Segoe UI Light", 0, 14)); // NOI18N
+        prStatusCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Active ", "Inactive" }));
+        prStatusCombo.setEnabled(false);
         jPanel4.add(prStatusCombo);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
