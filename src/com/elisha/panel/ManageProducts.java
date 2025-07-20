@@ -5,6 +5,7 @@
 package com.elisha.panel;
 
 import com.elisha.database.Database;
+import com.elisha.dialog.UpdateProductDialog;
 import com.elisha.dialog.ProductDiaog;
 import com.elisha.loggers.Loggers;
 import com.elisha.userDAO.User;
@@ -52,21 +53,21 @@ public class ManageProducts extends javax.swing.JPanel {
                 "Product ID", "Title", "Brand", "Category", "Available Colors","Changes"
             ));
 
-            String query = "SELECT " +
-                           "p.id AS product_id, " +
-                           "p.title, " +
-                           "b.brand, " +
-                           "p.product_sku AS sku,"+
-                           "c.name AS category, " +
-                           "GROUP_CONCAT(DISTINCT col.name SEPARATOR ', ') AS colors " +
-                           "FROM product p " +
-                           "JOIN brand b ON p.brand_id = b.id " +
-                           "JOIN category c ON p.category_id = c.id " +
-                           "JOIN stock_has_product shp ON p.id = shp.product_id " +
-                           "JOIN stock_has_variation shv ON shp.stock_id = shv.stock_id " +
-                           "JOIN variation v ON shv.variation_id = v.id " +
-                           "JOIN color col ON v.color_id = col.id " +
-                           "GROUP BY p.id, p.title, b.brand, c.name";
+            String query = "SELECT \n" +
+                            "    p.id AS product_id,\n" +
+                            "    p.title,\n" +
+                            "    b.brand,\n" +
+                            "    p.product_sku AS sku,\n" +
+                            "    c.name AS category,\n" +
+                            "    GROUP_CONCAT(DISTINCT col.name SEPARATOR ', ') AS colors\n" +
+                            "FROM product p\n" +
+                            "JOIN brand b ON p.brand_id = b.id\n" +
+                            "JOIN category c ON p.category_id = c.id\n" +
+                            "LEFT JOIN stock_has_product shp ON p.id = shp.product_id\n" +
+                            "LEFT JOIN stock_has_variation shv ON shp.stock_id = shv.stock_id\n" +
+                            "LEFT JOIN variation v ON shv.variation_id = v.id\n" +
+                            "LEFT JOIN color col ON v.color_id = col.id\n" +
+                            "GROUP BY p.id, p.title, b.brand, c.name;";
 
             try (Connection connection = Database.createConnection()) {
                 
@@ -80,7 +81,11 @@ public class ManageProducts extends javax.swing.JPanel {
                             row.add(rs.getString("title"));
                             row.add(rs.getString("brand"));
                             row.add(rs.getString("category"));
-                            row.add(rs.getString("colors"));
+                            String colors = rs.getString("colors");
+                            if (colors == null) {
+                                colors = "No colors available";
+                            }
+                            row.add(colors);
                             row.add("Edit");
                             dataVector.add(row);
                         }
@@ -103,7 +108,7 @@ public class ManageProducts extends javax.swing.JPanel {
                                 if (col == jTable1.getColumnCount() - 1) {
                                     String sku = jTable1.getValueAt(row, 0).toString();
 
-                                    ProductDiaog dialog = new ProductDiaog(homeScreen, true);
+                                    UpdateProductDialog dialog = new UpdateProductDialog(homeScreen, true);
                                     dialog.setLocationRelativeTo(null);
                                     dialog.setVisible(true);
 

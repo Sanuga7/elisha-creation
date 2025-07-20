@@ -191,6 +191,7 @@ public class BasicProductInfoPanel extends javax.swing.JPanel {
         jPanel2.add(prNameInput);
 
         prSKUInput.setEditable(false);
+        prSKUInput.setBackground(new java.awt.Color(255, 255, 255));
         prSKUInput.setFont(new java.awt.Font("Segoe UI Light", 0, 14)); // NOI18N
         prSKUInput.setEnabled(false);
         jPanel2.add(prSKUInput);
