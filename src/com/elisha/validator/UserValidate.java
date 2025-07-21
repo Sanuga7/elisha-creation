@@ -31,4 +31,14 @@ public class UserValidate {
     
         return false;
     }
+    
+    public static boolean isEmpty(String text){
+    
+        if(text.isEmpty()){
+          return false;
+        }else {
+          return true;
+        }
+    
+    }
 }

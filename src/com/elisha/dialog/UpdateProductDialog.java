@@ -4,6 +4,20 @@
  */
 package com.elisha.dialog;
 
+import com.elisha.database.Database;
+import com.elisha.dialog.panel.UpdateProductInfo;
+import com.elisha.loggers.Loggers;
+import com.elisha.optionpane.Message;
+import com.elisha.validator.UserValidate;
+import com.formdev.flatlaf.FlatIntelliJLaf;
+import java.awt.CardLayout;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.SwingUtilities;
+
 /**
  *
  * @author Sanuga
@@ -13,10 +27,38 @@ public class UpdateProductDialog extends javax.swing.JDialog {
     /**
      * Creates new form UpdateProductDialog
      */
+    private UpdateProductInfo updateInfo;
+    private CardLayout contentPanelLayout;
+    private static final String cls = UpdateProductDialog.class.getName();
+    
     public UpdateProductDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        loadPanels();
     }
+    
+    private void loadPanels(){
+        
+      if(contentPanelLayout == null && productContentPanel.getLayout() instanceof CardLayout){
+         contentPanelLayout = (CardLayout) productContentPanel.getLayout();
+      }
+      
+      updateInfo = new UpdateProductInfo();
+      
+      productContentPanel.add(updateInfo, "update_info");
+      SwingUtilities.updateComponentTreeUI(productContentPanel);
+    }  
+
+    public void setData(String sku) {
+    if (updateInfo != null) {
+        updateInfo.setProductBySKU(sku); // use the existing panel
+        if (contentPanelLayout != null) {
+            contentPanelLayout.show(productContentPanel, "update_info");
+        }
+        SwingUtilities.updateComponentTreeUI(productContentPanel);
+        System.out.println("Data sent to updateInfo: " + sku);
+    }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -123,7 +165,7 @@ public class UpdateProductDialog extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -134,13 +176,87 @@ public class UpdateProductDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void controlBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_controlBtnActionPerformed
-            controlBtn.setText("Submit");
+          insertProductData();
     }//GEN-LAST:event_controlBtnActionPerformed
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
 
     }//GEN-LAST:event_backBtnActionPerformed
 
+    private synchronized void insertProductData(){
+    
+        String productName = updateInfo.getPrNameInput().getText();
+        String description = updateInfo.getPrDescriptionInput().getText();
+        int status = updateInfo.getPrStatusCombo().getSelectedIndex();
+        String sku = updateInfo.getPrSKUInput().getText();
+
+        UserValidate validate = new UserValidate();
+        Message msg = new Message();
+
+        if (!validate.isEmpty(productName)) {
+            msg.showError(this, "Product Name Can't be Empty");
+            return;
+        }
+        if (!validate.isEmpty(description)) {
+            msg.showError(this, "Product Description Can't be Empty");
+            return;
+        }
+
+        try (Connection connection = Database.createConnection()) {
+            if (connection != null) {
+                connection.setAutoCommit(false); // start transaction
+
+                String updateProductSQL = "UPDATE `product` SET `title` = ?, `description` = ? WHERE `product_sku` = ?";
+                String findStockSQL = "SELECT `stock_id` FROM `stock_has_product` INNER JOIN `product` ON `stock_has_product`.`product_id` = `product`.`id` WHERE `product`.`product_sku` = ?";
+                String updateStockSQL = "UPDATE `stock` SET `status_id` = ? WHERE `id` = ?";
+
+                int productRows = 0;
+                int stockRows = 0;
+
+                try (PreparedStatement psProduct = connection.prepareStatement(updateProductSQL);
+                     PreparedStatement psFindStock = connection.prepareStatement(findStockSQL);
+                     PreparedStatement psStock = connection.prepareStatement(updateStockSQL)) {
+
+                    // update product
+                    psProduct.setString(1, productName);
+                    psProduct.setString(2, description);
+                    psProduct.setString(3, sku);
+                    productRows = psProduct.executeUpdate();
+
+                    // find stock id
+                    psFindStock.setString(1, sku);
+                    try (ResultSet rs = psFindStock.executeQuery()) {
+                        if (rs.next()) {
+                            int stockId = rs.getInt("stock_id");
+
+                            // update stock
+                            psStock.setInt(1, status);
+                            psStock.setInt(2, stockId);
+                            stockRows = psStock.executeUpdate();
+                        }
+                    }
+
+                    connection.commit();
+
+                    if (productRows > 0 || stockRows > 0) {
+                        msg.showSucess(this, "Product Successfully Updated");
+                    } else {
+                        msg.showError(this, "No records were updated. Please check SKU or data.");
+                    }
+                } catch (SQLException e) {
+                    connection.rollback();
+                    Loggers.logInfo("Update failed: " + e.getMessage(), cls);
+                    msg.showError(this, "Error updating product. Changes have been rolled back.");
+                } finally {
+                    connection.setAutoCommit(true);
+                }
+            }
+        } catch (SQLException e) {
+            Loggers.logInfo(e.getMessage(), cls);
+            msg.showError(this, "Database connection error.");
+        }
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -150,21 +266,10 @@ public class UpdateProductDialog extends javax.swing.JDialog {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(UpdateProductDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(UpdateProductDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(UpdateProductDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(UpdateProductDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        try{
+           FlatIntelliJLaf.setup();
+        }catch(Exception e){
+            Loggers.logInfo("Failed to Load Theme: "+e.getMessage() ,  String.valueOf(cls));
         }
         //</editor-fold>
 

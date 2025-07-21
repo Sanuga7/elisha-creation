@@ -4,6 +4,22 @@
  */
 package com.elisha.dialog.panel;
 
+import com.elisha.database.Database;
+import com.elisha.loggers.Loggers;
+import com.elisha.session.UserSession;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Vector;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
 /**
  *
  * @author Sanuga
@@ -13,8 +29,151 @@ public class UpdateProductInfo extends javax.swing.JPanel {
     /**
      * Creates new form UpdateProductInfo
      */
+    
+    private static String cls = UpdateProductInfo.class.getName();
+    private HashMap<String, Integer> statusMap;
+    
     public UpdateProductInfo() {
         initComponents();
+        loadAddedby();
+        loadBrand();
+        this.statusMap = new HashMap<>();
+        loadCategory();
+        loadStatus();
+    }
+    
+    private ResultSet searchData(String query){
+      ResultSet rs = null;
+        try{
+        
+            try{
+              Class.forName("com.mysql.cj.jdbc.Driver");
+               Connection c = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/elisha_db", "root", "2006@Sanuga");
+               Statement smt = c.createStatement();
+               rs = smt.executeQuery(query);
+            }catch(ClassNotFoundException e){
+               e.printStackTrace();
+            }
+        }catch(SQLException e){
+          e.printStackTrace();
+        }
+        return rs;
+    }
+
+    private void loadCategory(){
+        try{
+            ResultSet rs = searchData("SELECT * FROM `category`");
+            Vector<String> categories = new Vector();
+            categories.add("Select Category");
+            while(rs.next()){
+              String categoriesName = rs.getString("name");
+              categories.add(categoriesName);
+            }
+            DefaultComboBoxModel dcm = new DefaultComboBoxModel(categories);
+            prCatCombo.setModel(dcm);
+        }catch(SQLException e){
+          e.printStackTrace();
+        }
+    }
+    
+    private void loadAddedby(){
+
+        Vector<String> added = new Vector();
+        added.add(UserSession.name);
+        
+        DefaultComboBoxModel dcm = new DefaultComboBoxModel<>(added);
+        prGenderCombo.setModel(dcm);
+    
+    }
+    
+    private void loadBrand(){
+        try{
+            ResultSet rs = searchData("SELECT * FROM `brand`");
+            Vector<String> brands = new Vector();
+            brands.add("Select Brands");
+            while(rs.next()){
+              String brandName = rs.getString("brand");
+              brands.add(brandName);
+            }
+            DefaultComboBoxModel dcm = new DefaultComboBoxModel(brands);
+            prBrandCombo.setModel(dcm);
+        }catch(SQLException e){
+          e.printStackTrace();
+        }
+    }
+    
+    private void loadStatus(){
+        try{
+            ResultSet rs = searchData("SELECT * FROM `status`");
+            Vector<String> status = new Vector();
+            while(rs.next()){
+              String statusName = rs.getString("type");
+              int statusId = rs.getInt("id");
+              status.add(statusName);
+              statusMap.put(statusName, statusId);
+            }
+            DefaultComboBoxModel dcm = new DefaultComboBoxModel(status);
+            prStatusCombo.setModel(dcm);
+        }catch(SQLException e){
+          e.printStackTrace();
+        }
+    }
+    
+    public void setProductBySKU(String sku) {
+
+            try (Connection connection = Database.createConnection()) {
+                if (connection != null) {
+                    String query = "SELECT * FROM `product` WHERE `product_sku` = ?";
+                    try (PreparedStatement stmt = connection.prepareStatement(query)) {
+                        stmt.setString(1, sku);
+                        ResultSet rs = stmt.executeQuery();
+                        if (rs.next()) {
+                            prSKUInput.setText(sku);
+                            prNameInput.setText(rs.getString("title"));
+                            prDescriptionInput.setText(rs.getString("description"));
+
+                            Vector<String> added = new Vector<>();
+                            added.add(rs.getString("added_by"));
+                            DefaultComboBoxModel<String> dcm = new DefaultComboBoxModel<>(added);
+                            prGenderCombo.setModel(dcm);
+
+                            prBrandCombo.setSelectedIndex(rs.getInt("brand_id"));
+                            prCatCombo.setSelectedIndex(rs.getInt("category_id"));
+
+                            prNameInput.revalidate();
+                            prNameInput.repaint();
+                            prDescriptionInput.revalidate();
+                            prDescriptionInput.repaint();
+                            this.revalidate();
+                            this.repaint();
+                        } else {
+                            System.out.println("No product found for SKU: " + sku);
+                        }
+                    }
+                }
+            } catch (SQLException e) {
+                Loggers.logInfo("Failed to load product data: " + e.getMessage(), cls);
+            }
+    }
+
+    public JTextField getPrSKUInput() {
+        return prSKUInput;
+    }
+
+    public HashMap<String, Integer> getStatusMap() {
+        return statusMap;
+    }
+    
+    public JComboBox<String> getPrStatusCombo() {
+        return prStatusCombo;
+    }
+
+    public JTextArea getPrDescriptionInput() {
+        return prDescriptionInput;
+    }
+
+    public JTextField getPrNameInput() {
+        return prNameInput;
     }
 
     /**
@@ -95,9 +254,11 @@ public class UpdateProductInfo extends javax.swing.JPanel {
         jPanel2.add(jLabel5);
 
         prBrandCombo.setFont(new java.awt.Font("Segoe UI Light", 0, 14)); // NOI18N
+        prBrandCombo.setEnabled(false);
         jPanel2.add(prBrandCombo);
 
         prCatCombo.setFont(new java.awt.Font("Segoe UI Light", 0, 14)); // NOI18N
+        prCatCombo.setEnabled(false);
         prCatCombo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 prCatComboActionPerformed(evt);
@@ -121,8 +282,6 @@ public class UpdateProductInfo extends javax.swing.JPanel {
         jPanel3.add(prGenderCombo);
 
         prStatusCombo.setFont(new java.awt.Font("Segoe UI Light", 0, 14)); // NOI18N
-        prStatusCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Active ", "Inactive" }));
-        prStatusCombo.setEnabled(false);
         jPanel3.add(prStatusCombo);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);

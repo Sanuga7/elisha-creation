@@ -109,6 +109,7 @@ public class ManageProducts extends javax.swing.JPanel {
                                     String sku = jTable1.getValueAt(row, 0).toString();
 
                                     UpdateProductDialog dialog = new UpdateProductDialog(homeScreen, true);
+                                    dialog.setData(sku);
                                     dialog.setLocationRelativeTo(null);
                                     dialog.setVisible(true);
 

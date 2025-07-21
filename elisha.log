@@ -52,3 +52,7 @@ Jul 02, 2025 2:51:01 PM com.elisha.loggers.Loggers logInfo
 INFO: com.elisha.userDAO.User-Something Went Wrong Failed to createSatementColumn 'id' not found.
 Jul 16, 2025 5:53:06 PM com.elisha.loggers.Loggers logInfo
 INFO: com.elisha.userDAO.Product-Something Went Wrong Failed to createSatementData truncation: Data too long for column 'path' at row 1
+Jul 21, 2025 10:53:06 PM com.elisha.loggers.Loggers logInfo
+INFO: com.elisha.dialog.UpdateProductDialog-Data truncation: Truncated incorrect DOUBLE value: 'Pink Long Frock'
+Jul 22, 2025 2:04:28 AM com.elisha.loggers.Loggers logInfo
+INFO: com.elisha.dialog.UpdateProductDialog-Update failed: Cannot add or update a child row: a foreign key constraint fails (`elisha_db`.`stock`, CONSTRAINT `fk_stock_status1` FOREIGN KEY (`status_id`) REFERENCES `status` (`id`))
