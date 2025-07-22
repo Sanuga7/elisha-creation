@@ -56,3 +56,31 @@ Jul 21, 2025 10:53:06 PM com.elisha.loggers.Loggers logInfo
 INFO: com.elisha.dialog.UpdateProductDialog-Data truncation: Truncated incorrect DOUBLE value: 'Pink Long Frock'
 Jul 22, 2025 2:04:28 AM com.elisha.loggers.Loggers logInfo
 INFO: com.elisha.dialog.UpdateProductDialog-Update failed: Cannot add or update a child row: a foreign key constraint fails (`elisha_db`.`stock`, CONSTRAINT `fk_stock_status1` FOREIGN KEY (`status_id`) REFERENCES `status` (`id`))
+Jul 22, 2025 5:01:50 PM com.elisha.loggers.Loggers logServe
+SEVERE: com.elisha.panel.ManageCashier-You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''adamsmatth@gmail.com'' at line 1
+Jul 22, 2025 5:01:51 PM com.elisha.loggers.Loggers logServe
+SEVERE: com.elisha.panel.ManageCashier-You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''jacksonanna04@gmail.com'' at line 1
+Jul 22, 2025 5:01:52 PM com.elisha.loggers.Loggers logServe
+SEVERE: com.elisha.panel.ManageCashier-You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''jacksonanna04@gmail.com'' at line 1
+Jul 22, 2025 5:04:16 PM com.elisha.loggers.Loggers logServe
+SEVERE: com.elisha.panel.ManageCashier-You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'jacksonanna04@gmail.com' at line 1
+Jul 22, 2025 5:04:17 PM com.elisha.loggers.Loggers logServe
+SEVERE: com.elisha.panel.ManageCashier-You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'jacksonanna04@gmail.com' at line 1
+Jul 22, 2025 5:04:17 PM com.elisha.loggers.Loggers logServe
+SEVERE: com.elisha.panel.ManageCashier-You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'jacksonanna04@gmail.com' at line 1
+Jul 22, 2025 5:05:31 PM com.elisha.loggers.Loggers logServe
+SEVERE: com.elisha.panel.ManageCashier-You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'melvin9@gmail.com' at line 1
+Jul 22, 2025 5:06:10 PM com.elisha.loggers.Loggers logServe
+SEVERE: com.elisha.panel.ManageCashier-You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '@gmail.com' at line 1
+Jul 22, 2025 5:57:21 PM com.elisha.loggers.Loggers logServe
+SEVERE: com.elisha.userDAO.User-Table 'elisha_db.user' doesn't exist
+Jul 22, 2025 5:59:04 PM com.elisha.loggers.Loggers logServe
+SEVERE: com.elisha.userDAO.User-Data truncation: Data too long for column 'mobile' at row 1
+Jul 22, 2025 6:00:53 PM com.elisha.loggers.Loggers logServe
+SEVERE: com.elisha.userDAO.User-Data truncation: Data too long for column 'mobile' at row 1
+Jul 22, 2025 6:08:38 PM com.elisha.loggers.Loggers logServe
+SEVERE: com.elisha.userDAO.User-Data truncation: Data too long for column 'mobile' at row 1
+Jul 22, 2025 6:12:20 PM com.elisha.loggers.Loggers logServe
+SEVERE: com.elisha.userDAO.User-Data truncation: Data too long for column 'mobile' at row 1
+Jul 22, 2025 6:14:20 PM com.elisha.loggers.Loggers logServe
+SEVERE: com.elisha.userDAO.User-Data truncation: Data too long for column 'mobile' at row 1

@@ -139,6 +139,17 @@ public class UpdateProductInfo extends javax.swing.JPanel {
 
                             prBrandCombo.setSelectedIndex(rs.getInt("brand_id"));
                             prCatCombo.setSelectedIndex(rs.getInt("category_id"));
+                            int status = rs.getInt("status_id");
+                            
+                             if(status == 2){
+                                status = 1;
+                             }else if(status == 1){
+                                status = 0;
+                             }else{
+                                status = 0;
+                             }
+                            
+                            prStatusCombo.setSelectedIndex(status);
 
                             prNameInput.revalidate();
                             prNameInput.repaint();

@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import com.elisha.loggers.Loggers;
 import com.elisha.session.UserSession;
+import java.sql.SQLException;
 
 /**
  *
@@ -56,6 +57,81 @@ public class User {
         }
         
     
+    }
+    
+    public static boolean userUpdate(String fname, String lname, String mobile, int status, String email){
+    
+        System.out.println(fname+ " "+ lname+ " "+ mobile+" "+email);
+        try(Connection conn = Database.createConnection()){
+        
+            if(conn != null){
+            
+                String query = "UPDATE `users` SET `fname` = ? , `lname` = ?, `mobile` = ?, `status_id` = ? WHERE `email` = ?";
+                try(PreparedStatement stmt = conn.prepareStatement(query)){
+                
+                    stmt.setString(1, fname);
+                    stmt.setString(2, lname);
+                    stmt.setString(3, mobile);
+                    stmt.setInt(4, status);
+                    stmt.setString(5, email);
+                    
+                    int row = stmt.executeUpdate();
+                    
+                    if(row == 1){
+                    
+                        return true;
+                        
+                    }else{
+                       return false;
+                    }
+                    
+                }
+                
+            }
+            
+        }catch(SQLException e){
+            Loggers.logServe(e.getMessage(), cls);
+        }
+        
+    return false;
+    }
+    
+    public static boolean userAdd(String fname, String lname, String mobile, int status, String email, String pwd, int type){
+    
+        try(Connection conn = Database.createConnection()){
+        
+            if(conn != null){
+            
+                String query = "INSERT INTO `users` (`email`,`fname`,`lname`,`password`,`mobile`,`user_type_id`,`status_id`) VALUES (?,?,?,?,?,?,?)";
+                try(PreparedStatement stmt = conn.prepareStatement(query)){
+                
+                    stmt.setString(1, email);
+                    stmt.setString(2, fname);
+                    stmt.setString(3, lname);
+                    stmt.setString(4, pwd);
+                    stmt.setString(5, mobile);
+                    stmt.setInt(6, type);
+                    stmt.setInt(7, status);
+                    
+                    int row = stmt.executeUpdate();
+                    
+                    if(row == 1){
+                    
+                        return true;
+                        
+                    }else{
+                       return false;
+                    }
+                    
+                }
+                
+            }
+            
+        }catch(SQLException e){
+            Loggers.logServe(e.getMessage(), cls);
+        }
+        
+    return false;
     }
     
 }

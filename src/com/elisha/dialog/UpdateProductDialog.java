@@ -6,6 +6,7 @@ package com.elisha.dialog;
 
 import com.elisha.database.Database;
 import com.elisha.dialog.panel.UpdateProductInfo;
+import com.elisha.gui.Home;
 import com.elisha.loggers.Loggers;
 import com.elisha.optionpane.Message;
 import com.elisha.validator.UserValidate;
@@ -56,7 +57,6 @@ public class UpdateProductDialog extends javax.swing.JDialog {
             contentPanelLayout.show(productContentPanel, "update_info");
         }
         SwingUtilities.updateComponentTreeUI(productContentPanel);
-        System.out.println("Data sent to updateInfo: " + sku);
     }
 }
 
@@ -204,51 +204,39 @@ public class UpdateProductDialog extends javax.swing.JDialog {
 
         try (Connection connection = Database.createConnection()) {
             if (connection != null) {
-                connection.setAutoCommit(false); // start transaction
 
-                String updateProductSQL = "UPDATE `product` SET `title` = ?, `description` = ? WHERE `product_sku` = ?";
-                String findStockSQL = "SELECT `stock_id` FROM `stock_has_product` INNER JOIN `product` ON `stock_has_product`.`product_id` = `product`.`id` WHERE `product`.`product_sku` = ?";
-                String updateStockSQL = "UPDATE `stock` SET `status_id` = ? WHERE `id` = ?";
+                String updateProductSQL = "UPDATE `product` SET `title` = ?, `description` = ?, `status_id` = ? WHERE `product_sku` = ?";
 
+                if(status == 1){
+                  status = 2;
+                }else if(status == 0){
+                  status = 1;
+                }else{
+                  status = 0;
+                }
+                
                 int productRows = 0;
-                int stockRows = 0;
 
-                try (PreparedStatement psProduct = connection.prepareStatement(updateProductSQL);
-                     PreparedStatement psFindStock = connection.prepareStatement(findStockSQL);
-                     PreparedStatement psStock = connection.prepareStatement(updateStockSQL)) {
+                try (PreparedStatement psProduct = connection.prepareStatement(updateProductSQL)) {
 
                     // update product
                     psProduct.setString(1, productName);
                     psProduct.setString(2, description);
-                    psProduct.setString(3, sku);
+                    psProduct.setInt(3, status);
+                    psProduct.setString(4, sku);
+                    
                     productRows = psProduct.executeUpdate();
-
-                    // find stock id
-                    psFindStock.setString(1, sku);
-                    try (ResultSet rs = psFindStock.executeQuery()) {
-                        if (rs.next()) {
-                            int stockId = rs.getInt("stock_id");
-
-                            // update stock
-                            psStock.setInt(1, status);
-                            psStock.setInt(2, stockId);
-                            stockRows = psStock.executeUpdate();
-                        }
-                    }
-
-                    connection.commit();
-
-                    if (productRows > 0 || stockRows > 0) {
+                    
+                    if (productRows > 0) {
                         msg.showSucess(this, "Product Successfully Updated");
+                        this.dispose();
                     } else {
                         msg.showError(this, "No records were updated. Please check SKU or data.");
+                        this.dispose();
                     }
                 } catch (SQLException e) {
-                    connection.rollback();
                     Loggers.logInfo("Update failed: " + e.getMessage(), cls);
-                    msg.showError(this, "Error updating product. Changes have been rolled back.");
-                } finally {
-                    connection.setAutoCommit(true);
+                    msg.showError(this, "Error updating product.");
                 }
             }
         } catch (SQLException e) {
@@ -261,19 +249,11 @@ public class UpdateProductDialog extends javax.swing.JDialog {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
         try{
            FlatIntelliJLaf.setup();
         }catch(Exception e){
-            Loggers.logInfo("Failed to Load Theme: "+e.getMessage() ,  String.valueOf(cls));
+            Loggers.logInfo("Failed to Load Theme: "+e.getMessage() ,  cls);
         }
-        //</editor-fold>
-
-        /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 UpdateProductDialog dialog = new UpdateProductDialog(new javax.swing.JFrame(), true);
