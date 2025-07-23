@@ -9,7 +9,7 @@ import com.elisha.panel.Dashboard;
 import com.elisha.panel.ManageCashier;
 import com.elisha.panel.ManageManagers;
 import com.elisha.panel.ManageProducts;
-import com.elisha.panel.ManagerCustomer;
+import com.elisha.panel.ManageStocks;
 import com.elisha.session.UserSession;
 import com.elisha.util.AppIconUtil;
 import com.formdev.flatlaf.FlatClientProperties;
@@ -19,6 +19,8 @@ import java.awt.CardLayout;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.JFrame;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
 /**
@@ -37,7 +39,7 @@ public class Home extends javax.swing.JFrame {
     private CardLayout contentPanelLayout;
     private Dashboard dashboardPanel;
     private ManageProducts productPanel;
-    private ManagerCustomer customerPanel;
+    private ManageStocks customerPanel;
     private ManageCashier cashierPanel;
     private ManageManagers managerPanel;
     
@@ -51,6 +53,7 @@ public class Home extends javax.swing.JFrame {
     private void init(){
         
         AppIconUtil.applyIcon(this);
+        jScrollPane2.getVerticalScrollBar().setUnitIncrement(40);
         
         email = UserSession.email;
         type = UserSession.type;
@@ -60,8 +63,8 @@ public class Home extends javax.swing.JFrame {
         jLabel4.setIcon(new FlatSVGIcon("com/elisha/icon/menu.svg", 20, 20));
         DashboardBtn.setIcon(new FlatSVGIcon("com/elisha/icon/dashboard.svg", 20, 20));
         ManageProductsBtn.setIcon(new FlatSVGIcon("com/elisha/icon/product.svg", 20, 20));
-        ManageCustomerBtn.setIcon(new FlatSVGIcon("com/elisha/icon/user.svg", 20, 20));
-        ManageCashierBtn.setIcon(new FlatSVGIcon("com/elisha/icon/cashier.svg", 20, 20));
+        ManageCashierBtn.setIcon(new FlatSVGIcon("com/elisha/icon/user.svg", 20, 20));
+        ManageCustomerBtn.setIcon(new FlatSVGIcon("com/elisha/icon/cashier.svg", 20, 20));
         ManageManagersBtn.setIcon(new FlatSVGIcon("com/elisha/icon/manager.svg", 20, 20));
         jButton1.setIcon(new FlatSVGIcon("com/elisha/icon/Logout.svg", 20, 20));
         
@@ -113,11 +116,13 @@ public class Home extends javax.swing.JFrame {
         this.managerPanel = new ManageManagers();
         this.managerPanel.putClientProperty(FlatClientProperties.STYLE, "arc:20");
         this.jPanel4.add(managerPanel,"manager_panel");
-        this.customerPanel = new ManagerCustomer();
+        this.customerPanel = new ManageStocks();
         this.customerPanel.putClientProperty(FlatClientProperties.STYLE, "arc:20");
         this.jPanel4.add(customerPanel,"customer_panel");
         
         SwingUtilities.updateComponentTreeUI(jPanel4);
+        jPanel4.revalidate();
+        jPanel4.repaint();
     
     }
 
@@ -211,7 +216,7 @@ public class Home extends javax.swing.JFrame {
         });
 
         ManageCustomerBtn.setFont(new java.awt.Font("Segoe UI Light", 0, 15)); // NOI18N
-        ManageCustomerBtn.setText("Manage Customer");
+        ManageCustomerBtn.setText("Manage Stocks");
         ManageCustomerBtn.setBorderPainted(false);
         ManageCustomerBtn.setFocusPainted(false);
         ManageCustomerBtn.setFocusable(false);
@@ -320,6 +325,10 @@ public class Home extends javax.swing.JFrame {
             .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
+        jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane2.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        jScrollPane2.setVerifyInputWhenFocusTarget(false);
+
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
         jPanel4.setLayout(new java.awt.CardLayout());
         jScrollPane2.setViewportView(jPanel4);
@@ -361,21 +370,30 @@ public class Home extends javax.swing.JFrame {
     private void ManageCustomerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ManageCustomerBtnActionPerformed
         // TODO add your handling code here:
         this.contentPanelLayout.show(jPanel4, "customer_panel");
+        jScrollPane2.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
     }//GEN-LAST:event_ManageCustomerBtnActionPerformed
 
     private void ManageCashierBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ManageCashierBtnActionPerformed
         // TODO add your handling code here:
         this.contentPanelLayout.show(jPanel4, "cashier_panel");
+        jScrollPane2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        jScrollPane2.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     }//GEN-LAST:event_ManageCashierBtnActionPerformed
 
     private void ManageManagersBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ManageManagersBtnActionPerformed
         // TODO add your handling code here:
         this.contentPanelLayout.show(jPanel4, "manager_panel");
+        jScrollPane2.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
     }//GEN-LAST:event_ManageManagersBtnActionPerformed
 
     private void DashboardBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DashboardBtnActionPerformed
         // TODO add your handling code here:
         this.contentPanelLayout.show(jPanel4, "dashboard_panel");
+        jScrollPane2.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         
     }//GEN-LAST:event_DashboardBtnActionPerformed
 
@@ -387,6 +405,8 @@ public class Home extends javax.swing.JFrame {
     private void ManageProductsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ManageProductsBtnActionPerformed
         // TODO add your handling code here:
         this.contentPanelLayout.show(jPanel4, "product_panel");
+        jScrollPane2.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
     }//GEN-LAST:event_ManageProductsBtnActionPerformed
 
     /**

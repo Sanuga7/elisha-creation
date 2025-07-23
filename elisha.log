@@ -84,3 +84,19 @@ Jul 22, 2025 6:12:20 PM com.elisha.loggers.Loggers logServe
 SEVERE: com.elisha.userDAO.User-Data truncation: Data too long for column 'mobile' at row 1
 Jul 22, 2025 6:14:20 PM com.elisha.loggers.Loggers logServe
 SEVERE: com.elisha.userDAO.User-Data truncation: Data too long for column 'mobile' at row 1
+Jul 23, 2025 7:18:57 PM com.elisha.loggers.Loggers logServe
+SEVERE: com.elisha.panel.ManageStocks-Column 'status_id' not found.
+Jul 23, 2025 7:18:57 PM com.elisha.loggers.Loggers logServe
+SEVERE: com.elisha.panel.ManageStocks-Column 'status_id' not found.
+Jul 23, 2025 7:18:59 PM com.elisha.loggers.Loggers logServe
+SEVERE: com.elisha.panel.ManageStocks-Column 'status_id' not found.
+Jul 23, 2025 7:18:59 PM com.elisha.loggers.Loggers logServe
+SEVERE: com.elisha.panel.ManageStocks-Column 'status_id' not found.
+Jul 23, 2025 7:22:14 PM com.elisha.loggers.Loggers logServe
+SEVERE: com.elisha.panel.ManageStocks-Column 'status_id' not found.
+Jul 23, 2025 7:22:14 PM com.elisha.loggers.Loggers logServe
+SEVERE: com.elisha.panel.ManageStocks-Column 'status_id' not found.
+Jul 23, 2025 7:25:24 PM com.elisha.loggers.Loggers logServe
+SEVERE: com.elisha.panel.ManageStocks-Column 'quantity' not found.
+Jul 23, 2025 7:25:24 PM com.elisha.loggers.Loggers logServe
+SEVERE: com.elisha.panel.ManageStocks-Column 'quantity' not found.
