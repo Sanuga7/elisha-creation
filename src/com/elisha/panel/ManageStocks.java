@@ -14,6 +14,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.table.DefaultTableModel;
@@ -29,9 +31,11 @@ public class ManageStocks extends javax.swing.JPanel {
      */
     
     private static final String cls = ManageStocks.class.getName();
-    private static int colorId = 0;
-    private static int sizeId = 0;
-    private static int qtyId = 0;
+    private static int colorId;
+    private static int sizeId;
+    private static int qtyId;
+    private static int stockId;
+    private static int variationId;
     
     public ManageStocks() {
         initComponents();
@@ -119,7 +123,7 @@ public class ManageStocks extends javax.swing.JPanel {
               color.add(colorName);
             }
             DefaultComboBoxModel dcm = new DefaultComboBoxModel(color);
-            jComboBox5.setModel(dcm);
+            ColorCombo.setModel(dcm);
         }catch(SQLException e){
           e.printStackTrace();
         }
@@ -135,7 +139,7 @@ public class ManageStocks extends javax.swing.JPanel {
               size.add(sizeName);
             }
             DefaultComboBoxModel dcm = new DefaultComboBoxModel(size);
-            jComboBox4.setModel(dcm);
+            SizeCombo.setModel(dcm);
         }catch(SQLException e){
           e.printStackTrace();
         }
@@ -286,9 +290,10 @@ public class ManageStocks extends javax.swing.JPanel {
                                qtyInput.setText(rs3.getString("quantity"));
                                Atime.setText(rs4.getString("added_time"));
                                Rprice.setText(rs4.getString("received_price"));
-                               jTextField2.setText(rs4.getString("selling_price"));
-                               jComboBox5.setSelectedItem(color);
-                               jComboBox4.setSelectedItem(size);
+                               Sprice.setText(rs4.getString("selling_price"));
+                               ColorCombo.setSelectedItem(color);
+                               SizeCombo.setSelectedItem(size);
+                               stockId = rs.getInt("stock_id");
                             }
                          }
                      
@@ -296,6 +301,8 @@ public class ManageStocks extends javax.swing.JPanel {
                          ProductCombo.setSelectedItem(productTitle);
                          String supplier = rs3.getString("name");
                          SupplierCombo.setSelectedItem(supplier);
+                         ProductCombo.setEnabled(false);
+                         SupplierCombo.setEditable(false);
 
                          
                      }
@@ -332,16 +339,16 @@ public class ManageStocks extends javax.swing.JPanel {
         SupplierCombo = new javax.swing.JComboBox<>();
         jLabel5 = new javax.swing.JLabel();
         Rprice = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
+        Sprice = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         Atime = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         StatusCombo = new javax.swing.JComboBox<>();
         jLabel9 = new javax.swing.JLabel();
-        jComboBox4 = new javax.swing.JComboBox<>();
+        SizeCombo = new javax.swing.JComboBox<>();
         jLabel10 = new javax.swing.JLabel();
-        jComboBox5 = new javax.swing.JComboBox<>();
+        ColorCombo = new javax.swing.JComboBox<>();
         jLabel11 = new javax.swing.JLabel();
         qtyInput = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
@@ -390,7 +397,7 @@ public class ManageStocks extends javax.swing.JPanel {
 
         Rprice.setFont(new java.awt.Font("Segoe UI Light", 0, 14)); // NOI18N
 
-        jTextField2.setFont(new java.awt.Font("Segoe UI Light", 0, 14)); // NOI18N
+        Sprice.setFont(new java.awt.Font("Segoe UI Light", 0, 14)); // NOI18N
 
         jLabel6.setFont(new java.awt.Font("Segoe UI Light", 0, 14)); // NOI18N
         jLabel6.setText("Selling Price");
@@ -409,12 +416,12 @@ public class ManageStocks extends javax.swing.JPanel {
         jLabel9.setFont(new java.awt.Font("Segoe UI Light", 0, 14)); // NOI18N
         jLabel9.setText("Select Size:");
 
-        jComboBox4.setFont(new java.awt.Font("Segoe UI Light", 0, 14)); // NOI18N
+        SizeCombo.setFont(new java.awt.Font("Segoe UI Light", 0, 14)); // NOI18N
 
         jLabel10.setFont(new java.awt.Font("Segoe UI Light", 0, 14)); // NOI18N
         jLabel10.setText("Select Color");
 
-        jComboBox5.setFont(new java.awt.Font("Segoe UI Light", 0, 14)); // NOI18N
+        ColorCombo.setFont(new java.awt.Font("Segoe UI Light", 0, 14)); // NOI18N
 
         jLabel11.setFont(new java.awt.Font("Segoe UI Light", 0, 14)); // NOI18N
         jLabel11.setText("Quantity");
@@ -425,9 +432,19 @@ public class ManageStocks extends javax.swing.JPanel {
         jButton1.setFont(new java.awt.Font("Segoe UI Light", 0, 14)); // NOI18N
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
         jButton1.setText("Add Stock");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setFont(new java.awt.Font("Segoe UI Light", 0, 14)); // NOI18N
         jButton2.setText("Clear");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -450,7 +467,7 @@ public class ManageStocks extends javax.swing.JPanel {
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(ProductCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(SupplierCombo, 0, 235, Short.MAX_VALUE)
-                            .addComponent(jComboBox4, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(SizeCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(30, 30, 30)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -458,9 +475,9 @@ public class ManageStocks extends javax.swing.JPanel {
                             .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField2)
+                            .addComponent(Sprice)
                             .addComponent(Rprice)
-                            .addComponent(jComboBox5, 0, 192, Short.MAX_VALUE))
+                            .addComponent(ColorCombo, 0, 192, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel8)
@@ -491,16 +508,16 @@ public class ManageStocks extends javax.swing.JPanel {
                     .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Sprice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(StatusCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(SizeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jComboBox5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ColorCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(qtyInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
@@ -517,13 +534,11 @@ public class ManageStocks extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(14, 14, 14)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jSeparator1))
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
                     .addComponent(jScrollPane1)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jSeparator2)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(27, Short.MAX_VALUE))
         );
@@ -567,17 +582,38 @@ public class ManageStocks extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        ProductCombo.setSelectedIndex(1);
+        SupplierCombo.setSelectedIndex(1);
+        StatusCombo.setSelectedIndex(1);
+        ColorCombo.setSelectedIndex(1);
+        SizeCombo.setSelectedIndex(1);
+        qtyInput.setText(" ");
+        Rprice.setText("");
+        Sprice.setText("");
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime time = LocalDateTime.now();
+        Atime.setText(dtf.format(time));
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_jButton1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField Atime;
+    private javax.swing.JComboBox<String> ColorCombo;
     private javax.swing.JComboBox<String> ProductCombo;
     private javax.swing.JTextField Rprice;
+    private javax.swing.JComboBox<String> SizeCombo;
+    private javax.swing.JTextField Sprice;
     private javax.swing.JComboBox<String> StatusCombo;
     private javax.swing.JComboBox<String> SupplierCombo;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JComboBox<String> jComboBox4;
-    private javax.swing.JComboBox<String> jComboBox5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -595,7 +631,6 @@ public class ManageStocks extends javax.swing.JPanel {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField qtyInput;
     // End of variables declaration//GEN-END:variables
 }
