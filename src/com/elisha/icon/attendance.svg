@@ -1,0 +1,15 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Orange square with rounded corners -->
+  <rect x="0" y="0" width="200" height="200" rx="30" ry="30" fill="#FF705C"/>
+  
+  <!-- Person silhouette -->
+  <circle cx="100" cy="85" r="20" fill="#FFFFFF"/>
+  <path d="M70 140 C70 120, 130 120, 130 140 Z" fill="#FFFFFF"/>
+  
+  <!-- Clock circle -->
+  <circle cx="135" cy="135" r="22" fill="#FFFFFF"/>
+  
+  <!-- Clock hands -->
+  <line x1="135" y1="135" x2="135" y2="123" stroke="#FF705C" stroke-width="4" stroke-linecap="round"/>
+  <line x1="135" y1="135" x2="145" y2="135" stroke="#FF705C" stroke-width="4" stroke-linecap="round"/>
+</svg>

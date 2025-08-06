@@ -134,4 +134,73 @@ public class User {
     return false;
     }
     
+    public static boolean supplierUpdate(String fname,  String mobile, int status, String email){
+    
+        try(Connection conn = Database.createConnection()){
+        
+            if(conn != null){
+            
+                String query = "UPDATE `supplier` SET `name` = ? , `mobile_number` = ?, `status_id` = ? WHERE `email` = ?";
+                try(PreparedStatement stmt = conn.prepareStatement(query)){
+                
+                    stmt.setString(1, fname);
+                    stmt.setString(2, mobile);
+                    stmt.setInt(3, status);
+                    stmt.setString(4, email);
+                    
+                    int row = stmt.executeUpdate();
+                    
+                    if(row == 1){
+                    
+                        return true;
+                        
+                    }else{
+                       return false;
+                    }
+                    
+                }
+                
+            }
+            
+        }catch(SQLException e){
+            Loggers.logServe(e.getMessage(), cls);
+        }
+        
+    return false;
+    }
+    
+    public static boolean supplierAdd(String name, String mobile, int status, String email){
+    
+        try(Connection conn = Database.createConnection()){
+        
+            if(conn != null){
+            
+                String query = "INSERT INTO `supplier` (`name`,`mobile_number`,`email`,`status_id`) VALUES (?,?,?,?)";
+                try(PreparedStatement stmt = conn.prepareStatement(query)){
+                
+                    stmt.setString(1, name);
+                    stmt.setString(2, mobile);
+                    stmt.setString(3, email);
+                    stmt.setInt(4, status);
+                    
+                    int row = stmt.executeUpdate();
+                    
+                    if(row == 1){
+                    
+                        return true;
+                        
+                    }else{
+                       return false;
+                    }
+                    
+                }
+                
+            }
+            
+        }catch(SQLException e){
+            Loggers.logServe(e.getMessage(), cls);
+        }
+        
+    return false;
+    }
 }

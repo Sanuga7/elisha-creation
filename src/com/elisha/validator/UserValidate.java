@@ -95,5 +95,36 @@ public class UserValidate {
         }
        return false; 
     }
+    
+    public static boolean isSupplierExist(String email){
+    
+        try(Connection conn = Database.createConnection()){
+        
+            if(conn != null){
+            
+                String query = "SELECT * FROM `supplier` WHERE `email` = ?";
+                try(PreparedStatement stmt = conn.prepareStatement(query)){
+                
+                    stmt.setString(1, email);
+                    
+                    ResultSet rs = stmt.executeQuery();
+                    
+                    if(rs.next()){
+                    
+                        return true;
+                        
+                    }else{
+                       return false;
+                    }
+                    
+                }
+                
+            }
+            
+        }catch(SQLException e){
+            Loggers.logServe(e.getMessage(), "UserValidate.java-->isEmailExist");
+        }
+       return false; 
+    }
 
 }

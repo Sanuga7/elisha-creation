@@ -5,11 +5,15 @@
 package com.elisha.gui;
 
 import com.elisha.loggers.Loggers;
+import com.elisha.panel.Attendance;
 import com.elisha.panel.Dashboard;
 import com.elisha.panel.ManageCashier;
 import com.elisha.panel.ManageManagers;
 import com.elisha.panel.ManageProducts;
 import com.elisha.panel.ManageStocks;
+import com.elisha.panel.ManageSupplier;
+import com.elisha.panel.Reports;
+import com.elisha.panel.ResetPassword;
 import com.elisha.session.UserSession;
 import com.elisha.util.AppIconUtil;
 import com.formdev.flatlaf.FlatClientProperties;
@@ -42,6 +46,10 @@ public class Home extends javax.swing.JFrame {
     private ManageStocks customerPanel;
     private ManageCashier cashierPanel;
     private ManageManagers managerPanel;
+    private ManageSupplier supplierPanel;
+    private Reports reportPanel;
+    private Attendance attendancePanel;
+    private ResetPassword passwordPanel;
     
     public Home() {
         initComponents();
@@ -67,6 +75,10 @@ public class Home extends javax.swing.JFrame {
         ManageCustomerBtn.setIcon(new FlatSVGIcon("com/elisha/icon/cashier.svg", 20, 20));
         ManageManagersBtn.setIcon(new FlatSVGIcon("com/elisha/icon/manager.svg", 20, 20));
         jButton1.setIcon(new FlatSVGIcon("com/elisha/icon/Logout.svg", 20, 20));
+        ManageSupplier.setIcon(new FlatSVGIcon("com/elisha/icon/supplier.svg", 20, 20));
+        attendanceBtn.setIcon(new FlatSVGIcon("com/elisha/icon/attendance.svg", 20, 20));
+        reportBtn.setIcon(new FlatSVGIcon("com/elisha/icon/reports.svg", 20, 20));
+        rpedBtn.setIcon(new FlatSVGIcon("com/elisha/icon/password.svg", 20, 20));
         
         jPanel4.putClientProperty(FlatClientProperties.STYLE, "arc:25");
         jPanel2.putClientProperty(FlatClientProperties.STYLE, "arc:25");
@@ -89,6 +101,7 @@ public class Home extends javax.swing.JFrame {
         if(role.equalsIgnoreCase("Cashier")){        
             ManageManagersBtn.setVisible(false);
             ManageCashierBtn.setVisible(false);
+            reportBtn.setVisible(false);
         }else if(role.equalsIgnoreCase("Manager")){
             ManageManagersBtn.setVisible(false);
         }else {
@@ -119,6 +132,18 @@ public class Home extends javax.swing.JFrame {
         this.customerPanel = new ManageStocks();
         this.customerPanel.putClientProperty(FlatClientProperties.STYLE, "arc:20");
         this.jPanel4.add(customerPanel,"customer_panel");
+        this.supplierPanel = new ManageSupplier();
+        this.supplierPanel.putClientProperty(FlatClientProperties.STYLE, "arc:20");
+        this.jPanel4.add(supplierPanel,"supplier_panel");
+        this.reportPanel = new Reports();
+        this.reportPanel.putClientProperty(FlatClientProperties.STYLE, "arc:20");
+        this.jPanel4.add(reportPanel,"report_panel");
+        this.attendancePanel = new Attendance();
+        this.attendancePanel.putClientProperty(FlatClientProperties.STYLE, "arc:20");
+        this.jPanel4.add(attendancePanel,"attendance_panel");
+        this.passwordPanel = new ResetPassword();
+        this.passwordPanel.putClientProperty(FlatClientProperties.STYLE, "arc:20");
+        this.jPanel4.add(passwordPanel,"password_panel");
         
         SwingUtilities.updateComponentTreeUI(jPanel4);
         jPanel4.revalidate();
@@ -147,6 +172,10 @@ public class Home extends javax.swing.JFrame {
         ManageCustomerBtn = new javax.swing.JButton();
         ManageCashierBtn = new javax.swing.JButton();
         ManageManagersBtn = new javax.swing.JButton();
+        ManageSupplier = new javax.swing.JButton();
+        reportBtn = new javax.swing.JButton();
+        attendanceBtn = new javax.swing.JButton();
+        rpedBtn = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
@@ -171,6 +200,7 @@ public class Home extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setFocusable(false);
 
         jLabel4.setFont(new java.awt.Font("Yu Gothic UI", 0, 24)); // NOI18N
         jLabel4.setText("Elisha");
@@ -254,6 +284,58 @@ public class Home extends javax.swing.JFrame {
             }
         });
 
+        ManageSupplier.setFont(new java.awt.Font("Segoe UI Light", 0, 15)); // NOI18N
+        ManageSupplier.setText("Manage Supplier");
+        ManageSupplier.setBorderPainted(false);
+        ManageSupplier.setFocusPainted(false);
+        ManageSupplier.setFocusable(false);
+        ManageSupplier.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
+        ManageSupplier.setRequestFocusEnabled(false);
+        ManageSupplier.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ManageSupplierActionPerformed(evt);
+            }
+        });
+
+        reportBtn.setFont(new java.awt.Font("Segoe UI Light", 0, 15)); // NOI18N
+        reportBtn.setText("Reports");
+        reportBtn.setBorderPainted(false);
+        reportBtn.setFocusPainted(false);
+        reportBtn.setFocusable(false);
+        reportBtn.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
+        reportBtn.setRequestFocusEnabled(false);
+        reportBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                reportBtnActionPerformed(evt);
+            }
+        });
+
+        attendanceBtn.setFont(new java.awt.Font("Segoe UI Light", 0, 15)); // NOI18N
+        attendanceBtn.setText("Attendance");
+        attendanceBtn.setBorderPainted(false);
+        attendanceBtn.setFocusPainted(false);
+        attendanceBtn.setFocusable(false);
+        attendanceBtn.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
+        attendanceBtn.setRequestFocusEnabled(false);
+        attendanceBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                attendanceBtnActionPerformed(evt);
+            }
+        });
+
+        rpedBtn.setFont(new java.awt.Font("Segoe UI Light", 0, 15)); // NOI18N
+        rpedBtn.setText("Reset Password");
+        rpedBtn.setBorderPainted(false);
+        rpedBtn.setFocusPainted(false);
+        rpedBtn.setFocusable(false);
+        rpedBtn.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
+        rpedBtn.setRequestFocusEnabled(false);
+        rpedBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rpedBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -265,6 +347,10 @@ public class Home extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(16, 16, 16)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(rpedBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(attendanceBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(reportBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(ManageSupplier, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(DashboardBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -294,7 +380,15 @@ public class Home extends javax.swing.JFrame {
                 .addComponent(ManageCashierBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(ManageManagersBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 97, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(ManageSupplier, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(reportBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(attendanceBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(rpedBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18))
         );
@@ -409,6 +503,34 @@ public class Home extends javax.swing.JFrame {
         jScrollPane2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
     }//GEN-LAST:event_ManageProductsBtnActionPerformed
 
+    private void ManageSupplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ManageSupplierActionPerformed
+        // TODO add your handling code here:
+        this.contentPanelLayout.show(jPanel4, "supplier_panel");
+        jScrollPane2.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+    }//GEN-LAST:event_ManageSupplierActionPerformed
+
+    private void reportBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportBtnActionPerformed
+        // TODO add your handling code here:
+        this.contentPanelLayout.show(jPanel4, "report_panel");
+        jScrollPane2.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+    }//GEN-LAST:event_reportBtnActionPerformed
+
+    private void attendanceBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_attendanceBtnActionPerformed
+        // TODO add your handling code here:
+        this.contentPanelLayout.show(jPanel4, "attendance_panel");
+        jScrollPane2.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+    }//GEN-LAST:event_attendanceBtnActionPerformed
+
+    private void rpedBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rpedBtnActionPerformed
+        // TODO add your handling code here:
+        this.contentPanelLayout.show(jPanel4, "password_panel");
+        jScrollPane2.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+    }//GEN-LAST:event_rpedBtnActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -431,6 +553,8 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JButton ManageCustomerBtn;
     private javax.swing.JButton ManageManagersBtn;
     private javax.swing.JButton ManageProductsBtn;
+    private javax.swing.JButton ManageSupplier;
+    private javax.swing.JButton attendanceBtn;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -443,5 +567,7 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JButton reportBtn;
+    private javax.swing.JButton rpedBtn;
     // End of variables declaration//GEN-END:variables
 }

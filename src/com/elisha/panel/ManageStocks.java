@@ -6,6 +6,7 @@ package com.elisha.panel;
 
 import com.elisha.database.Database;
 import com.elisha.loggers.Loggers;
+import com.elisha.optionpane.Message;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
@@ -17,7 +18,10 @@ import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -29,175 +33,195 @@ public class ManageStocks extends javax.swing.JPanel {
     /**
      * Creates new form ManagerCustomer
      */
-    
     private static final String cls = ManageStocks.class.getName();
     private static int colorId;
     private static int sizeId;
     private static int qtyId;
     private static int stockId;
     private static int variationId;
-    
+    private static JTextField id;
+    private static JTextField name;
+
     public ManageStocks() {
         initComponents();
         loadTable();
-        loadStatus(); 
+        loadStatus();
         loadProduct();
         loadSupplier();
         loadColor();
         loadSize();
+        init();
     }
     
-    private ResultSet searchData(String query){
-      ResultSet rs = null;
-        try{
-        
-            try{
-              Class.forName("com.mysql.cj.jdbc.Driver");
-               Connection c = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/elisha_db", "root", "2006@Sanuga");
-               Statement smt = c.createStatement();
-               rs = smt.executeQuery(query);
-            }catch(ClassNotFoundException e){
-               e.printStackTrace();
+    private void init(){
+       id = new JTextField();
+       id.setText("");
+       id.setVisible(false);
+       name = new JTextField();
+       name.setText("");
+       name.setVisible(false);
+    }
+
+    private ResultSet searchData(String query) {
+        ResultSet rs = null;
+        try {
+
+            try {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                Connection c = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/elisha_db", "root", "2006@Sanuga");
+                Statement smt = c.createStatement();
+                rs = smt.executeQuery(query);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
-        }catch(SQLException e){
-          e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return rs;
     }
-    
-    private void loadStatus(){
-        try{
+
+    private void loadStatus() {
+        try {
             ResultSet rs = searchData("SELECT * FROM `status`");
             Vector<String> status = new Vector();
-            while(rs.next()){
-              String statusName = rs.getString("type");
-              int statusId = rs.getInt("id");
-              status.add(statusName);
+            while (rs.next()) {
+                String statusName = rs.getString("type");
+                int statusId = rs.getInt("id");
+                status.add(statusName);
             }
             DefaultComboBoxModel dcm = new DefaultComboBoxModel(status);
             StatusCombo.setModel(dcm);
-        }catch(SQLException e){
-          e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
-    
-    private void loadProduct(){
-        try{
+
+    private void loadProduct() {
+        try {
             ResultSet rs = searchData("SELECT * FROM `product`");
             Vector<String> product = new Vector();
-            while(rs.next()){
-              String productTitle = rs.getString("title");
-              int productId = rs.getInt("id");
-              product.add(productTitle);
+            while (rs.next()) {
+                String productTitle = rs.getString("title");
+                int productId = rs.getInt("id");
+                product.add(productTitle);
             }
             DefaultComboBoxModel dcm = new DefaultComboBoxModel(product);
             ProductCombo.setModel(dcm);
-        }catch(SQLException e){
-          e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
-    
-    private void loadSupplier(){
-        try{
+
+    private void loadSupplier() {
+        try {
             ResultSet rs = searchData("SELECT * FROM `supplier`");
             Vector<String> supplier = new Vector();
-            while(rs.next()){
-              String supplierName = rs.getString("name");
-              int supplierId = rs.getInt("id");
-              supplier.add(supplierName);
+            while (rs.next()) {
+                String supplierName = rs.getString("name");
+                int supplierId = rs.getInt("id");
+                supplier.add(supplierName);
             }
             DefaultComboBoxModel dcm = new DefaultComboBoxModel(supplier);
             SupplierCombo.setModel(dcm);
-        }catch(SQLException e){
-          e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
-    
-    private void loadColor(){
-        try{
+
+    private void loadColor() {
+        try {
             ResultSet rs = searchData("SELECT * FROM `color`");
             Vector<String> color = new Vector();
-            while(rs.next()){
-              String colorName = rs.getString("name");
-              int colorID = rs.getInt("id");
-              color.add(colorName);
+            while (rs.next()) {
+                String colorName = rs.getString("name");
+                int colorID = rs.getInt("id");
+                color.add(colorName);
             }
             DefaultComboBoxModel dcm = new DefaultComboBoxModel(color);
             ColorCombo.setModel(dcm);
-        }catch(SQLException e){
-          e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
-    
-    private void loadSize(){
-        try{
+
+    private void loadSize() {
+        try {
             ResultSet rs = searchData("SELECT * FROM `size`");
             Vector<String> size = new Vector();
-            while(rs.next()){
-              String sizeName = rs.getString("size");
-              int sizeID = rs.getInt("id");
-              size.add(sizeName);
+            while (rs.next()) {
+                String sizeName = rs.getString("size");
+                int sizeID = rs.getInt("id");
+                size.add(sizeName);
             }
             DefaultComboBoxModel dcm = new DefaultComboBoxModel(size);
             SizeCombo.setModel(dcm);
-        }catch(SQLException e){
-          e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
-    
-    private void loadTable(){
-    
-        try(Connection conn = Database.createConnection()){
-        
-            if(conn != null){
-             
-                String query = "SELECT * FROM `stock` INNER JOIN `stock_has_product` ON stock.id=stock_has_product.stock_id INNER JOIN `product` ON " +
-                                "stock_has_product.product_id=product.id INNER JOIN `stock_has_variation` "
-                                + "ON stock.id=stock_has_variation.stock_id INNER JOIN `variation` ON " +
-                                "stock_has_variation.variation_id = variation.id INNER JOIN `color` "
-                                 + "ON variation.color_id=color.id INNER JOIN `size` ON variation.size_id=size.id";
-                
-                try(Statement stmt = conn.createStatement()){
-                
+
+    private void loadTable() {
+        try (Connection conn = Database.createConnection()) {
+            if (conn != null) {
+                String query
+                        = "SELECT "
+                        + "    p.title, "
+                        + "    st.received_price, "
+                        + "    st.selling_price, "
+                        + "    st.added_time, "
+                        + "    st.updated_time, "
+                        + "    c.name AS color, "
+                        + "    s.size AS size, "
+                        + "    v.quantity, "
+                        + "    st.id "
+                        + "FROM stock st "
+                        + "INNER JOIN stock_has_product shp ON st.id = shp.stock_id "
+                        + "INNER JOIN product p ON shp.product_id = p.id "
+                        + "INNER JOIN stock_has_variation shv ON st.id = shv.stock_id "
+                        + "INNER JOIN variation v ON shv.variation_id = v.id "
+                        + "INNER JOIN color c ON v.color_id = c.id "
+                        + "INNER JOIN size s ON v.size_id = s.id;";
+
+                try (Statement stmt = conn.createStatement()) {
                     ResultSet rs = stmt.executeQuery(query);
-                    
-                    Vector<String> headers = new Vector();
+
+                    Vector<String> headers = new Vector<>();
+                    headers.add("id");
                     headers.add("title");
                     headers.add("received_price");
                     headers.add("selling_price");
-                    headers.add("added_time");
-                    headers.add("updated_time");
+                    headers.add("time");
                     headers.add("color");
                     headers.add("size");
                     headers.add("Quantity");
                     headers.add("Edit");
-                    
-                    Vector<Vector> data = new Vector<>();
-                    
-                    
-                    while(rs.next()){
-                    
-                        Vector<String> row = new Vector();
+
+                    Vector<Vector<String>> data = new Vector<>();
+
+                    while (rs.next()) {
+                        Vector<String> row = new Vector<>();
+                        row.add(rs.getString("id"));
                         row.add(rs.getString("title"));
                         row.add(rs.getString("received_price"));
                         row.add(rs.getString("selling_price"));
-                        row.add(rs.getString("added_time"));
-                        row.add(rs.getString("updated_time"));
-                        row.add(rs.getString("name"));
+                        if(rs.getString("updated_time") != null){
+                           row.add(rs.getString("updated_time"));
+                        }else{
+                           row.add(rs.getString("added_time"));
+                        }
+                        row.add(rs.getString("color"));
                         row.add(rs.getString("size"));
                         row.add(rs.getString("quantity"));
                         row.add("edit");
-                        
                         data.add(row);
-                    
                     }
-                    
+
                     DefaultTableModel model = new DefaultTableModel(data, headers) {
-                            @Override
-                            public boolean isCellEditable(int row, int column) {
-                                return false;
-                            }
-                        };
+                        @Override
+                        public boolean isCellEditable(int row, int column) {
+                            return false;
+                        }
+                    };
 
                     jTable1.setModel(model);
                     jTable1.addMouseListener(new MouseAdapter() {
@@ -207,113 +231,92 @@ public class ManageStocks extends javax.swing.JPanel {
                             int column = jTable1.columnAtPoint(e.getPoint());
 
                             if (column == 8 && row >= 0) {
-                                
+                                String idVal = jTable1.getValueAt(row, 0).toString();
+                                String titleVal = jTable1.getValueAt(row, 1).toString();
                                 String color = jTable1.getValueAt(row, 5).toString();
                                 String size = jTable1.getValueAt(row, 6).toString();
                                 String qty = jTable1.getValueAt(row, 7).toString();
-                                
                                 setData(color, size, qty);
-                                
-                                
+                                jButton1.setText("Update Stock");
+                                id.setText(idVal);
+                                name.setText(titleVal);
                             }
                         }
                     });
-                    
                 }
-                
             }
-        
-        }catch(SQLException e){
-          Loggers.logServe(e.getMessage(), cls);
+        } catch (SQLException e) {
+            Loggers.logServe(e.getMessage(), cls);
         }
-    
     }
-    
-    private void setData(String color, String size, String qty){
-    
-        try(Connection conn = Database.createConnection()){
-          if(conn != null){
-              
-              String query1 = "SELECT `id` FROM `color` WHERE `name` = ?";
-              String query2 = "SELECT `id` FROM `size` s WHERE s.size = ?";
-              
-             try(PreparedStatement stmt = conn.prepareStatement(query1);
-                 PreparedStatement stmt1= conn.prepareStatement(query2)){
-                
-                 stmt.setString(1, color);
-                 stmt1.setString(1, size);
-                 
-                 ResultSet rs = stmt.executeQuery();
-                 ResultSet rs1 = stmt1.executeQuery();
-                 
-                 while(rs.next()){
-                   colorId = rs.getInt("id");
-                 }
-                 
-                 while(rs1.next()){
-                   sizeId = rs1.getInt("id");
-                 }
-                 
-                 qtyId = Integer.parseInt(qty);
 
-                 String query3 = "SELECT * FROM `variation` INNER JOIN `stock_has_variation` ON variation.id=stock_has_variation.variation_id "
-                         + "INNER JOIN `supplier` ON stock_has_variation.supplier_id=supplier.id INNER JOIN `stock` ON "
-                         + "stock_has_variation.stock_id=stock.id INNER JOIN `stock_has_product` ON stock.id=stock_has_product.stock_id "
-                         + "INNER JOIN `product` ON stock_has_product.product_id=product.id "
-                         + "WHERE color_id = ? AND size_id = ? AND quantity = ? ";
-                 
-                 try(PreparedStatement stmt2 = conn.prepareStatement(query3)){
-                    
-                     stmt2.setInt(1, colorId);
-                     stmt2.setInt(2, sizeId);
-                     stmt2.setInt(3, qtyId);
-                     
-                     ResultSet rs3 = stmt2.executeQuery();
-                     
-                     if(rs3.next()){
-                         
-                         String query4 = "SELECT * FROM `stock` WHERE `id` = ?";
-                         
-                         try(PreparedStatement  stmt3 = conn.prepareStatement(query4)){
-                            stmt3.setInt(1, rs3.getInt("stock_id"));
-                            ResultSet rs4 = stmt3.executeQuery();
-                            
-                            if(rs4.next()){
-                            
-                               int status = rs4.getInt("status_id");
-                               if(status == 1){
-                                    status = 0;
-                               }else{
-                                    status = 1;
-                               }
-                               StatusCombo.setSelectedIndex(status);
-                               qtyInput.setText(rs3.getString("quantity"));
-                               Atime.setText(rs4.getString("added_time"));
-                               Rprice.setText(rs4.getString("received_price"));
-                               Sprice.setText(rs4.getString("selling_price"));
-                               ColorCombo.setSelectedItem(color);
-                               SizeCombo.setSelectedItem(size);
-                               stockId = rs.getInt("stock_id");
-                            }
-                         }
-                     
-                         String productTitle = rs3.getString("title");
-                         ProductCombo.setSelectedItem(productTitle);
-                         String supplier = rs3.getString("name");
-                         SupplierCombo.setSelectedItem(supplier);
-                         ProductCombo.setEnabled(false);
-                         SupplierCombo.setEditable(false);
+    private void setData(String color, String size, String qty) {
+        try (Connection conn = Database.createConnection()) {
+            if (conn != null) {
+                String query1 = "SELECT id FROM color WHERE name = ?";
+                String query2 = "SELECT id FROM size WHERE size = ?";
 
-                         
-                     }
-                 }
-                 
-             }
-          }
-        }catch(SQLException e){
-          Loggers.logServe(e.getMessage(), cls);
+                try (PreparedStatement stmt = conn.prepareStatement(query1); PreparedStatement stmt1 = conn.prepareStatement(query2)) {
+
+                    stmt.setString(1, color);
+                    stmt1.setString(1, size);
+
+                    ResultSet rs = stmt.executeQuery();
+                    ResultSet rs1 = stmt1.executeQuery();
+
+                    if (rs.next()) {
+                        colorId = rs.getInt("id");
+                    }
+                    if (rs1.next()) {
+                        sizeId = rs1.getInt("id");
+                    }
+                    qtyId = Integer.parseInt(qty);
+
+                    String query3
+                            = "SELECT v.*, shv.*, st.*, p.title, s.name AS supplier_name "
+                            + "FROM variation v "
+                            + "INNER JOIN stock_has_variation shv ON v.id = shv.variation_id "
+                            + "INNER JOIN supplier s ON shv.supplier_id = s.id "
+                            + "INNER JOIN stock st ON shv.stock_id = st.id "
+                            + "INNER JOIN stock_has_product shp ON st.id = shp.stock_id "
+                            + "INNER JOIN product p ON shp.product_id = p.id "
+                            + "WHERE v.color_id = ? AND v.size_id = ? AND v.quantity = ?";
+
+                    try (PreparedStatement stmt2 = conn.prepareStatement(query3)) {
+                        stmt2.setInt(1, colorId);
+                        stmt2.setInt(2, sizeId);
+                        stmt2.setInt(3, qtyId);
+
+                        ResultSet rs3 = stmt2.executeQuery();
+
+                        if (rs3.next()) {
+                            stockId = rs3.getInt("stock_id");
+
+                            // Set form fields
+                            int status = rs3.getInt("status_id");
+                            StatusCombo.setSelectedIndex(status - 1); // Assuming Combo is 0-based
+
+                            qtyInput.setText(rs3.getString("quantity"));
+                            Atime.setText(rs3.getString("added_time"));
+                            Rprice.setText(rs3.getString("received_price"));
+                            Sprice.setText(rs3.getString("selling_price"));
+                            ColorCombo.setSelectedItem(color);
+                            SizeCombo.setSelectedItem(size);
+
+                            ProductCombo.setSelectedItem(rs3.getString("title"));
+                            SupplierCombo.setSelectedItem(rs3.getString("supplier_name"));
+                            ProductCombo.setEnabled(false);
+                            SupplierCombo.setEnabled(false);
+                            ColorCombo.setEnabled(false);
+                            SizeCombo.setEnabled(false);
+                            qtyInput.setEnabled(false);
+                        }
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            Loggers.logServe(e.getMessage(), cls);
         }
-        
     }
 
     /**
@@ -595,11 +598,129 @@ public class ManageStocks extends javax.swing.JPanel {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime time = LocalDateTime.now();
         Atime.setText(dtf.format(time));
+        ProductCombo.setEnabled(true);
+        SupplierCombo.setEnabled(true);
+        ColorCombo.setEnabled(true);
+        SizeCombo.setEnabled(true);
+        qtyInput.setEnabled(true);
+        jButton1.setText("Add Stock");
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        String rPrice = Rprice.getText();
+        String sPrice = Sprice.getText();
+        int status = StatusCombo.getSelectedIndex()+1;
+        int color = ColorCombo.getSelectedIndex()+1;
+        int productId = ProductCombo.getSelectedIndex() + 1;
+        int size = SizeCombo.getSelectedIndex()+1;
+        int supplier = SupplierCombo.getSelectedIndex()+1;
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime time = LocalDateTime.now();
+        String now = dtf.format(time);
+        int qty = Integer.parseInt(qtyInput.getText());
         
+        if(jButton1.getText().equalsIgnoreCase("add stock")){
+          
+            String insertStock = "INSERT INTO stock (received_price, selling_price, added_time, updated_time, status_id) VALUES (?, ?, ?, ?, ?)";
+            String insertStockProduct = "INSERT INTO stock_has_product (stock_id, product_id) VALUES (?, ?)";
+            String insertVariation = "INSERT INTO variation (quantity, color_id, size_id) VALUES (?, ?, ?)";
+            String insertStockVariation = "INSERT INTO stock_has_variation (stock_id, variation_id, supplier_id) VALUES (?, ?, ?)";
+
+            try (Connection conn = Database.createConnection()) {
+                conn.setAutoCommit(false);
+
+                // 1. Insert stock
+                try (PreparedStatement psStock = conn.prepareStatement(insertStock, Statement.RETURN_GENERATED_KEYS)) {
+                    psStock.setString(1, rPrice);
+                    psStock.setString(2, sPrice);
+                    psStock.setString(3, now);
+                    psStock.setString(4, now);
+                    psStock.setInt(5, status);
+                    psStock.executeUpdate();
+
+                    ResultSet rsStock = psStock.getGeneratedKeys();
+                    if (!rsStock.next()) throw new SQLException("Failed to insert stock");
+                    int stockId = rsStock.getInt(1);
+
+                    // 2. Link stock to product
+                    try (PreparedStatement psStockProd = conn.prepareStatement(insertStockProduct)) {
+                        psStockProd.setInt(1, stockId);
+                        psStockProd.setInt(2, productId);
+                        psStockProd.executeUpdate();
+                    }
+
+                    // 3. Insert variation
+                    try (PreparedStatement psVariation = conn.prepareStatement(insertVariation, Statement.RETURN_GENERATED_KEYS)) {
+                        psVariation.setInt(1, qty);
+                        psVariation.setInt(2, color);
+                        psVariation.setInt(3, size);
+                        psVariation.executeUpdate();
+
+                        ResultSet rsVar = psVariation.getGeneratedKeys();
+                        if (!rsVar.next()) throw new SQLException("Failed to insert variation");
+                        int variationId = rsVar.getInt(1);
+
+                        // 4. Link stock to variation and supplier
+                        try (PreparedStatement psStockVar = conn.prepareStatement(insertStockVariation)) {
+                            psStockVar.setInt(1, stockId);
+                            psStockVar.setInt(2, variationId);
+                            psStockVar.setInt(3, supplier);
+                            psStockVar.executeUpdate();
+                        }
+                    }
+
+                    conn.commit();
+                    Message.showSucess(this, "Stock successfully added!");
+                    loadTable();
+
+                } catch (SQLException e) {
+                    conn.rollback();
+                    throw e;
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(ManageStocks.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }else{
+        
+            String query =  "UPDATE stock st " +
+                        "INNER JOIN stock_has_product shp ON st.id = shp.stock_id " +
+                        "INNER JOIN product p ON shp.product_id = p.id " +
+                        "INNER JOIN stock_has_variation shv ON st.id = shv.stock_id " +
+                        "INNER JOIN variation v ON shv.variation_id = v.id " +
+                        "INNER JOIN color c ON v.color_id = c.id " +
+                        "INNER JOIN size s ON v.size_id = s.id " +
+                        "SET " +
+                        "    st.received_price = ?, " +
+                        "    st.selling_price = ?, " +
+                        "    st.updated_time = ?, " +
+                        "    st.status_id = ? " +
+                        "WHERE st.id = ? " +
+                        "  AND p.title = ? ";
+        
+            try(Connection conn = Database.createConnection()){
+                if(conn != null){
+                   try(PreparedStatement stmt = conn.prepareStatement(query)){
+                      stmt.setString(1, rPrice);
+                      stmt.setString(2, sPrice);
+                      stmt.setString(3, now);
+                      stmt.setInt(4, status);
+                      stmt.setInt(5, Integer.parseInt(id.getText())); 
+                      stmt.setString(6, name.getText());
+
+                      int update = stmt.executeUpdate();
+                      if(update == 1){
+                          Message.showSucess(this, "Successfully updated");
+                          loadTable();
+                      }
+                   }
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(ManageStocks.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
 
