@@ -164,3 +164,23 @@ Aug 06, 2025 11:19:10 PM com.elisha.loggers.Loggers logServe
 SEVERE: com.elisha.panel.ManageManagers-Column 'fname' not found.
 Aug 06, 2025 11:19:10 PM com.elisha.loggers.Loggers logServe
 SEVERE: com.elisha.panel.ManageManagers-Column 'fname' not found.
+Aug 07, 2025 9:03:19 PM com.elisha.loggers.Loggers logInfo
+INFO: com.elisha.panel.Reports-Jasper report generation failed: java.net.MalformedURLException: Cannot invoke "String.length()" because "spec" is null
+Aug 07, 2025 9:06:37 PM com.elisha.loggers.Loggers logInfo
+INFO: com.elisha.panel.Reports-Jasper report generation failed: Report design not valid : 
+	 1. Field not found : COLUMN_0
+	 2. Field not found : COLUMN_1
+	 3. Field not found : COLUMN_2
+	 4. Field not found : COLUMN_3
+Aug 07, 2025 9:08:36 PM com.elisha.loggers.Loggers logInfo
+INFO: com.elisha.panel.Reports-Jasper report generation failed: Report design not valid : 
+	 1. Field not found : COLUMN_0
+	 2. Field not found : COLUMN_1
+	 3. Field not found : COLUMN_2
+	 4. Field not found : COLUMN_3
+Aug 07, 2025 9:39:57 PM com.elisha.loggers.Loggers logInfo
+INFO: com.elisha.panel.Reports-Jasper report generation failed: Report design not valid : 
+	 1. Field not found : COLUMN_0
+	 2. Field not found : COLUMN_1
+	 3. Field not found : COLUMN_2
+	 4. Field not found : COLUMN_3
