@@ -212,6 +212,11 @@ public class Home extends javax.swing.JFrame {
         jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton1.setFocusPainted(false);
         jButton1.setFocusable(false);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jLabel10.setBackground(new java.awt.Color(204, 204, 204));
         jLabel10.setFont(new java.awt.Font("Yu Gothic UI", 0, 12)); // NOI18N
@@ -531,9 +536,21 @@ public class Home extends javax.swing.JFrame {
         jScrollPane2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
     }//GEN-LAST:event_rpedBtnActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        UserSession.email = null;
+        UserSession.name = null;
+        UserSession.role = null;
+        UserSession.type = null;
+        LoginManager login = new LoginManager();
+        login.setVisible(true);
+        homeScreen.dispose();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
+    private static Home homeScreen;
     public static void main(String args[]) {
         try{
            FlatIntelliJLaf.setup();
@@ -542,7 +559,8 @@ public class Home extends javax.swing.JFrame {
         }
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Home().setVisible(true);
+                homeScreen = new Home();
+                homeScreen.setVisible(true);
             }
         });
     }
