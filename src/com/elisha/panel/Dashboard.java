@@ -70,14 +70,12 @@ public class Dashboard extends javax.swing.JPanel {
                     
                     ResultSet rs = stmt.executeQuery();
                     
-                    int price = 0;
-                    
                     if(rs.next()){
                     
                       int salesCount = rs.getInt("salesCount");
                       int totalPrice = rs.getInt("totalPrice");
                         
-                      jLabel2.setText("Rs."+price+".00");
+                      jLabel2.setText("Rs."+totalPrice+".00");
                       jLabel6.setText(salesCount + " Sales");
                     }
                 }
