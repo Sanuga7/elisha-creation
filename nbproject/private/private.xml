@@ -3,10 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/C:/Users/Pc/OneDrive/Documents/NetBeansProjects/elisha-creation/src/com/elisha/validator/UserValidate.java</file>
             <file>file:/C:/Users/Pc/OneDrive/Documents/NetBeansProjects/elisha-creation/src/com/elisha/gui/SplashScreen.java</file>
-            <file>file:/C:/Users/Pc/OneDrive/Documents/NetBeansProjects/elisha-creation/src/com/elisha/util/AppIconUtil.java</file>
             <file>file:/C:/Users/Pc/OneDrive/Documents/NetBeansProjects/elisha-creation/src/com/elisha/gui/LoginManager.java</file>
-            <file>file:/C:/Users/Pc/OneDrive/Documents/NetBeansProjects/elisha-creation/src/com/elisha/panel/Reports.java</file>
+            <file>file:/C:/Users/Pc/OneDrive/Documents/NetBeansProjects/elisha-creation/src/com/elisha/gui/Home.java</file>
+            <file>file:/C:/Users/Pc/OneDrive/Documents/NetBeansProjects/elisha-creation/test/com/elisha/validator/UserValidateTest.java</file>
         </group>
     </open-files>
 </project-private>

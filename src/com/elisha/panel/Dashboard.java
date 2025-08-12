@@ -58,7 +58,7 @@ public class Dashboard extends javax.swing.JPanel {
         LocalDateTime now = LocalDateTime.now();
         String time = dtf.format(now);
         
-        String query = "SELECT * FROM `invoice` WHERE `time` LIKE ?";
+        String query = "SELECT SUM(price) AS totalPrice, COUNT(*) AS salesCount FROM invoice WHERE `time` LIKE ?";
         
         try(Connection connection = Database.createConnection()){
         
@@ -72,14 +72,14 @@ public class Dashboard extends javax.swing.JPanel {
                     
                     int price = 0;
                     
-                    while(rs.next()){
+                    if(rs.next()){
                     
-                        price += Integer.valueOf(rs.getString("price"));
+                      int salesCount = rs.getInt("salesCount");
+                      int totalPrice = rs.getInt("totalPrice");
                         
+                      jLabel2.setText("Rs."+price+".00");
+                      jLabel6.setText(salesCount + " Sales");
                     }
-                    
-                    jLabel2.setText("Rs."+price+".00");
-                
                 }
             
             }
@@ -90,38 +90,26 @@ public class Dashboard extends javax.swing.JPanel {
     
     }
     
-    private void totalEarn(){
+    private void totalEarn() {
         
-        String query = "SELECT * FROM `invoice`";
-        
-        try(Connection connection = Database.createConnection()){
-        
-            if(connection != null){
-            
-                try(PreparedStatement stmt = connection.prepareStatement(query)){
-                    
+        String query = "SELECT SUM(price) AS totalPrice, COUNT(*) AS salesCount FROM invoice";
+
+        try (Connection connection = Database.createConnection()) {
+            if (connection != null) {
+                try (PreparedStatement stmt = connection.prepareStatement(query)) {
                     ResultSet rs = stmt.executeQuery();
-                    
-                    int price = 0;
-                    int x = 0;
-                    while(rs.next()){
-                    
-                       price += Integer.valueOf(rs.getString("price"));
-                       x++;
+                    if (rs.next()) {
+                        int totalPrice = rs.getInt("totalPrice");
+
+                        jLabel4.setText("Rs." + totalPrice + ".00");
                     }
-                    
-                    jLabel4.setText("Rs."+price+".00");
-                    jLabel6.setText(x+" Sales");
-                
                 }
-            
             }
-        
-        }catch(SQLException e){
-           Loggers.logInfo("Something Went Wrong Failed to createSatement"+ e.getMessage(), cls);
+        } catch (SQLException e) {
+            Loggers.logInfo("Failed to calculate total earnings: " + e.getMessage(), cls);
         }
-    
     }
+
     
     private void charteCreate(){
         
@@ -385,7 +373,7 @@ public class Dashboard extends javax.swing.JPanel {
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel6.setText("40 Sales");
+        jLabel6.setText("0 Sales");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -459,7 +447,7 @@ public class Dashboard extends javax.swing.JPanel {
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
