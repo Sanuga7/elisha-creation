@@ -144,33 +144,34 @@ public class Attendance extends javax.swing.JPanel {
         // TODO add your handling code here:
         String email = UserSession.email;
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime time = LocalDateTime.now();
-        String now = dtf.format(time);
-        
-        String query = "INSERT INTO `attendance` (`time`,`users_email`) VALUES (?,?)";
-        String query1 = "SELECT * FROM `attendance` WHERE `users_email` = ?";
-        
-        try(Connection conn = Database.createConnection()){
-          if(conn != null){
-             try(PreparedStatement stmt = conn.prepareStatement(query1)){
-                stmt.setString(1, email);
-                 ResultSet rs = stmt.executeQuery();
-                 if(!rs.next()){
-                     try(PreparedStatement stmt1 = conn.prepareStatement(query)){
-                         stmt1.setString(1, now);
-                         stmt1.setString(2, email);
-                         int num = stmt1.executeUpdate();
-                         if(num == 1){
-                             Message.showSucess(this, "Attendace marked Successfully");
-                         }
-                     }
-                 }else{
-                     Message.showError(this, "Attendance marked Already");
-                 }
-             }
-          }
-        }catch(SQLException e){
-          e.printStackTrace();
+        String now = dtf.format(LocalDateTime.now());
+
+        String checkQuery = "SELECT * FROM attendance WHERE users_email = ? AND DATE(time) = CURDATE()";
+        String insertQuery = "INSERT INTO attendance (time, users_email) VALUES (?, ?)";
+
+        try (Connection conn = Database.createConnection()) {
+            if (conn != null) {
+                try (PreparedStatement checkStmt = conn.prepareStatement(checkQuery)) {
+                    checkStmt.setString(1, email);
+                    ResultSet rs = checkStmt.executeQuery();
+
+                    if (!rs.next()) {
+                        try (PreparedStatement insertStmt = conn.prepareStatement(insertQuery)) {
+                            insertStmt.setString(1, now);
+                            insertStmt.setString(2, email);
+                            int rows = insertStmt.executeUpdate();
+                            if (rows == 1) {
+                                Message.showSucess(this, "Attendance marked successfully.");
+                            }
+                        }
+                    } else {
+                        Message.showError(this, "Attendance already marked for today.");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Message.showError(this, "Database error: " + e.getMessage());
         }
     }//GEN-LAST:event_markBtnActionPerformed
 

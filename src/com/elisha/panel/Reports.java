@@ -212,7 +212,7 @@ public class Reports extends javax.swing.JPanel {
                         JasperViewer.viewReport(fillReport, false);
 
                         //JasperExportManager.exportReportToHtmlFile(fillReport, "report.html");
-                        JasperExportManager.exportReportToPdfFile(fillReport, "report.pdf");
+                        JasperExportManager.exportReportToPdfFile(fillReport, "low_stock_report.pdf");
 
                     } catch (JRException e) {
                         e.printStackTrace();
@@ -289,7 +289,7 @@ public class Reports extends javax.swing.JPanel {
             JasperViewer.viewReport(fillReport, false);
 
             //JasperExportManager.exportReportToHtmlFile(fillReport, "report.html");
-            JasperExportManager.exportReportToPdfFile(fillReport, "report.pdf");
+            JasperExportManager.exportReportToPdfFile(fillReport, "monthly_income_report.pdf");
 
         } catch (JRException e) {
            e.printStackTrace();
